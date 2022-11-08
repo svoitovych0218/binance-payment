@@ -1,8 +1,32 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import axios from 'axios';
+import { isMobile } from 'react-device-detect';
 
-function App() {
+interface IPaymentData {
+  prepayId: string;
+  terminalType: string;
+  expireTime: number;
+  qrcodeLink: string;
+  qrContent: string;
+  checkoutUrl: string;
+  deeplink: string;
+  universalUrl: string;
+}
+const App = () => {
+  const [data, setData] = useState<IPaymentData | undefined>(undefined);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const onPaymentClick = useCallback(async () => {
+    setIsLoading(true);
+    const res = await axios.post('https://ux8qu8rh13.execute-api.us-west-1.amazonaws.com/dev/create-order');
+    if (res.data.status === 'SUCCESS') {
+      setData(res.data.data);
+    }
+    setIsLoading(false);
+  }, [setData]);
+
   return (
     <div className="App">
       <header className="App-header">
@@ -10,14 +34,8 @@ function App() {
         <p>
           Edit <code>src/App.tsx</code> and save to reload.
         </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <button disabled={isLoading} className='binance-checkout' onClick={onPaymentClick}>Checkout</button>
+        {data && <a className='binance-pay' href={isMobile ? data?.deeplink : data?.checkoutUrl} target="_blank" rel="noreferrer">Pay</a>}
       </header>
     </div>
   );

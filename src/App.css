@@ -28,6 +28,23 @@
   color: #61dafb;
 }
 
+.binance-checkout {
+  padding: 20px 40px;
+    border-radius: 10px;
+    background: #3bedff;
+    color: white;
+    font: inherit;
+    cursor: pointer;
+}
+
+.binance-pay {
+    margin-top: 30px;
+    border: 1px solid white;
+    padding: 20px 75px;
+    border-radius: 10px;
+    background: #f1ec59;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
