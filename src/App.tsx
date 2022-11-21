@@ -1,8 +1,9 @@
 import React, { useCallback, useState } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import axios from 'axios';
-import { isMobile } from 'react-device-detect';
+import { RouteHandler } from './RouteHandler';
+import { jwtInterceptor } from './api/auth/utils/jwtInterceptor'
+import { AuthProvider } from './providers/AuthProvider';
 
 interface IPaymentData {
   prepayId: string;
@@ -14,6 +15,9 @@ interface IPaymentData {
   deeplink: string;
   universalUrl: string;
 }
+
+jwtInterceptor();
+
 const App = () => {
   const [data, setData] = useState<IPaymentData | undefined>(undefined);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -28,16 +32,20 @@ const App = () => {
   }, [setData]);
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <button disabled={isLoading} className='binance-checkout' onClick={onPaymentClick}>Checkout</button>
-        {data && <a className='binance-pay' href={isMobile ? data?.deeplink : data?.checkoutUrl} target="_blank" rel="noreferrer">Pay</a>}
-      </header>
-    </div>
+    // <div className="App">
+    //   <header className="App-header">
+    //     <img src={logo} className="App-logo" alt="logo" />
+    //     <p>
+    //       Edit <code>src/App.tsx</code> and save to reload.
+    //     </p>
+    //     <button disabled={isLoading} className='binance-checkout' onClick={onPaymentClick}>Checkout</button>
+    //     {data && <a className='binance-pay' href={isMobile ? data?.deeplink : data?.checkoutUrl} target="_blank" rel="noreferrer">Pay</a>}
+    //   </header>
+    // </div>
+    <AuthProvider>
+        <RouteHandler />
+    </AuthProvider>
+
   );
 }
 

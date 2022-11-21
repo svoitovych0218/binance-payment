@@ -1,0 +1,96 @@
+import { useCallback, useEffect, useState } from 'react';
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
+import Modal from 'react-bootstrap/Modal';
+import { useDebounce } from '../../hooks/Debounce';
+import axios from 'axios';
+import { Field, FieldProps, Formik, useFormikContext } from 'formik';
+import { FormField, FormFieldProps } from '../../Components/Inputs/FormField';
+import { FormControl, FormGroup, FormLabel } from 'react-bootstrap';
+
+interface ICreatePaymentModalProps {
+    show: boolean;
+    handleSubmit: (values: ICreatePaymentFormProps) => Promise<void>;
+
+}
+
+export interface ICreatePaymentFormProps {
+    amountBusd?: number;
+    amountUAH?: number;
+    receipeNumber: string;
+}
+
+const AmmountFormField = ({ label, type, name, ...props }: FormFieldProps) => {
+    const { values, setFieldValue } = useFormikContext<ICreatePaymentFormProps>();
+    const debouncedAmount = useDebounce(values.amountUAH, 1000);
+    const getRate = useCallback(async () => {
+        const res = await axios.get('https://api.binance.com/api/v3/trades?symbol=USDTUAH&limit=10');
+        const data = res.data[0];
+        if (debouncedAmount) {
+            setFieldValue('amountBusd', debouncedAmount / (+data.price));
+        }
+    }, [debouncedAmount, setFieldValue])
+
+    useEffect(() => {
+        getRate();
+    }, [debouncedAmount, getRate])
+    return (
+        <Field
+            name={name}
+            render={({ field, form }: FieldProps<any>) => (
+                <FormGroup>
+                    <FormLabel>{label}</FormLabel>
+                    <FormControl isInvalid={!!form.errors[field.name]} type={type} value={field.value} onChange={e => {
+                        setFieldValue(field.name, +e.target.value);
+                    }} />
+                    <div>{form.errors[field.name] as string}</div>
+                </FormGroup>
+            )}
+            {...props}
+        />)
+}
+
+export const CreatePaymentModal = ({ show, handleSubmit }: ICreatePaymentModalProps) => {
+    const initialValues: ICreatePaymentFormProps = {
+        amountBusd: undefined,
+        amountUAH: undefined,
+        receipeNumber: ''
+    }
+
+    return (
+        <Modal show={show}>
+            <Modal.Header closeButton>
+                <Modal.Title>Fill the form</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <Formik
+                    initialValues={initialValues}
+                    onSubmit={handleSubmit}
+                >
+                    {({
+                        values,
+                        errors,
+                        touched,
+                        handleChange,
+                        handleBlur,
+                        handleSubmit,
+                        isSubmitting,
+                        setFieldValue
+                        /* and other goodies */
+                    }) => {
+                        return (
+                            <Form onSubmit={handleSubmit}>
+                                <FormField name="receipeNumber" label='Receipe number' type='text' />
+                                <AmmountFormField name="amountUAH" label='Amount in UAH' type='number' />
+                                <FormField disabled name="amountBusd" label='Amount in Busd' type='number' />
+                                <Button variant="primary" type='submit'>
+                                    Save Changes
+                                </Button>
+                            </Form>
+                        )
+                    }}
+                </Formik>
+            </Modal.Body>
+        </Modal>
+    )
+}
