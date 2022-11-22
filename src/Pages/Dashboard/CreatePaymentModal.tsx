@@ -10,6 +10,7 @@ import { FormControl, FormGroup, FormLabel } from 'react-bootstrap';
 
 interface ICreatePaymentModalProps {
     show: boolean;
+    onClose: () => void;
     handleSubmit: (values: ICreatePaymentFormProps) => Promise<void>;
 
 }
@@ -50,7 +51,7 @@ const AmmountFormField = ({ label, type, name, ...props }: FormFieldProps) => {
         />)
 }
 
-export const CreatePaymentModal = ({ show, handleSubmit }: ICreatePaymentModalProps) => {
+export const CreatePaymentModal = ({ show, onClose, handleSubmit }: ICreatePaymentModalProps) => {
     const initialValues: ICreatePaymentFormProps = {
         amountBusd: undefined,
         amountUAH: undefined,
@@ -58,7 +59,7 @@ export const CreatePaymentModal = ({ show, handleSubmit }: ICreatePaymentModalPr
     }
 
     return (
-        <Modal show={show}>
+        <Modal show={show} onHide={onClose}>
             <Modal.Header closeButton>
                 <Modal.Title>Fill the form</Modal.Title>
             </Modal.Header>

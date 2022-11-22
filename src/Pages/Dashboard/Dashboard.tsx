@@ -5,6 +5,8 @@ import { CreatePaymentModal, ICreatePaymentFormProps } from './CreatePaymentModa
 import { useCallback, useEffect, useState } from 'react';
 import { createSinglePayment } from '../../api/createSinglePayment';
 import { getPayments } from '../../api/getPayments';
+import { PaymentCard } from './PaymentCard';
+import { Col, Row } from 'react-bootstrap';
 
 // const payments: IPaymentTableItem[] = [
 //     {_id: '1', amountUah: 240, amountCrypto: 5.4, cryptoCurrency: 'USDT', status: 'Pending', createdAt: new Date() },
@@ -44,8 +46,15 @@ export const Dashboard = () => {
                 <h2>Payments: </h2>
                 <Button variant="outline-primary" onClick={handleCreatePaymentClick}>Create payment</Button>
             </div>
-            <PaymentsTable items={payments} />
-            <CreatePaymentModal show={showCreatePaymentModal} handleSubmit={handleSubmitModal} />
+            {/* <PaymentsTable items={payments} /> */}
+            <Row>
+                {payments.map(s => (
+                    <Col md={3} sm={12}>
+                        <PaymentCard item={s} />
+                    </Col>
+                ))}
+            </Row>
+            <CreatePaymentModal show={showCreatePaymentModal} onClose={() => setShowCreatePaymentModal(false)} handleSubmit={handleSubmitModal} />
         </Container>
     )
 }

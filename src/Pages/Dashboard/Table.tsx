@@ -17,7 +17,7 @@ export const PaymentsTable = ({ items }: { items: IPaymentTableItem[] }) => {
     const [selectedItem, setSelectedItem] = useState<IPaymentTableItem | undefined>(undefined);
     return (
         <>
-            <Table striped bordered hover>
+            <Table striped bordered hover >
                 <thead>
                     <tr>
                         <th>#</th>
@@ -44,7 +44,7 @@ export const PaymentsTable = ({ items }: { items: IPaymentTableItem[] }) => {
                     ))}
                 </tbody>
             </Table>
-            <Modal show={show}>
+            <Modal md={6} show={show}>
                 <Modal.Header closeButton onHide={()=>setShow(false)}>
                     <Modal.Title>Payment QR Code</Modal.Title>
                 </Modal.Header>
