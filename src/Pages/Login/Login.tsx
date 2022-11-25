@@ -46,9 +46,9 @@ export const Login = () => {
                     /* and other goodies */
                 }) => (
                     <Form onSubmit={handleSubmit}>
-                        <FormField name='organizationName' label='Organization' type='text' />
-                        <FormField name='userName' label='Username' type='text' />
-                        <FormField name='password' label='Password' type='password' />
+                        <FormField name='organizationName' label='Організація' type='text' />
+                        <FormField name='userName' label='Логін' type='text' />
+                        <FormField name='password' label='Пароль' type='password' />
                         <Button type="submit" variant="primary">
                             Log In
                         </Button>

@@ -12,7 +12,7 @@ export interface IPaymentTableItem {
 
 export const PaymentCard = ({ item }: { item: IPaymentTableItem }) => {
     return (
-        <Card style={{marginBottom: '50px'}}>
+        <Card style={{ marginBottom: '50px' }}>
             <Card.Body>
                 <Card.Title style={{
                     width: '100%',
@@ -23,10 +23,10 @@ export const PaymentCard = ({ item }: { item: IPaymentTableItem }) => {
             </Card.Body>
             <Card.Img variant="top" src={item.binanceResponse.data.qrcodeLink} />
             <ListGroup className="list-group-flush">
-                <ListGroup.Item>Amount: {item.amount.toFixed(2)}</ListGroup.Item>
-                <ListGroup.Item>Created by: {item.createdByUserName}</ListGroup.Item>
-                <ListGroup.Item>Status: {item.status}</ListGroup.Item>
-                <ListGroup.Item>createdAt: {new Date(item.createdAt).toLocaleTimeString()}</ListGroup.Item>
+                <ListGroup.Item>Ціна: {item.amount.toFixed(2)} BUSD</ListGroup.Item>
+                <ListGroup.Item>Створив: {item.createdByUserName}</ListGroup.Item>
+                <ListGroup.Item style={{ color: item.status === 'COMPETED' ? 'green' : 'red' }}>Статус: {item.status}</ListGroup.Item>
+                <ListGroup.Item>Час: {new Date(item.createdAt).toLocaleTimeString()}</ListGroup.Item>
             </ListGroup>
             {/* <Card.Body>
         <Card.Link href="#">Card Link</Card.Link>

@@ -1,5 +1,5 @@
 import Container from 'react-bootstrap/Container';
-import { IPaymentTableItem, PaymentsTable } from './Table';
+import { IPaymentTableItem } from './Table';
 import Button from 'react-bootstrap/Button';
 import { CreatePaymentModal, ICreatePaymentFormProps } from './CreatePaymentModal';
 import { useCallback, useEffect, useState } from 'react';
@@ -7,13 +7,6 @@ import { createSinglePayment } from '../../api/createSinglePayment';
 import { getPayments } from '../../api/getPayments';
 import { PaymentCard } from './PaymentCard';
 import { Col, Row } from 'react-bootstrap';
-
-// const payments: IPaymentTableItem[] = [
-//     {_id: '1', amountUah: 240, amountCrypto: 5.4, cryptoCurrency: 'USDT', status: 'Pending', createdAt: new Date() },
-//     {_id: '2', amountUah: 443, amountCrypto: 8.12, cryptoCurrency: 'USDT', status: 'Pending', createdAt: new Date() },
-//     {_id: '3', amountUah: 812, amountCrypto: 20.1, cryptoCurrency: 'USDT', status: 'Pending', createdAt: new Date() }
-
-// ]
 
 export const Dashboard = () => {
     const [showCreatePaymentModal, setShowCreatePaymentModal] = useState<boolean>(false);
@@ -43,8 +36,8 @@ export const Dashboard = () => {
     return (
         <Container>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <h2>Payments: </h2>
-                <Button variant="outline-primary" onClick={handleCreatePaymentClick}>Create payment</Button>
+                <h2>Платежі</h2>
+                <Button variant="outline-primary" onClick={handleCreatePaymentClick}>Створити платіж</Button>
             </div>
             {/* <PaymentsTable items={payments} /> */}
             <Row>
