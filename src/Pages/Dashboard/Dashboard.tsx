@@ -35,7 +35,7 @@ export const Dashboard = () => {
     console.log(payments);
     return (
         <Container>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', margin: '20px 20px' }}>
                 <h2>Платежі</h2>
                 <Button variant="outline-primary" onClick={handleCreatePaymentClick}>Створити платіж</Button>
             </div>
