@@ -82,7 +82,7 @@ export const CreatePaymentModal = ({ show, onClose, handleSubmit }: ICreatePayme
                         return (
                             <Form onSubmit={handleSubmit}>
                                 <FormField name="receipeNumber" label='Номер чеку' type='text' />
-                                <AmmountFormField name="amountUAH" label='Сума в USH' type='number' />
+                                <AmmountFormField name="amountUAH" label='Сума в UAH' type='number' />
                                 <FormField disabled name="amountBusd" label='Сума в BUSD' type='number' />
                                 <Button variant="primary" type='submit'>
                                     Створити
