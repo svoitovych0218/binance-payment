@@ -25,7 +25,7 @@ export const PaymentCard = ({ item }: { item: IPaymentTableItem }) => {
             <ListGroup className="list-group-flush">
                 <ListGroup.Item>Ціна: {item.amount.toFixed(2)} BUSD</ListGroup.Item>
                 <ListGroup.Item>Створив: {item.createdByUserName}</ListGroup.Item>
-                <ListGroup.Item style={{ color: item.status === 'COMPETED' ? 'green' : 'red' }}>Статус: {item.status}</ListGroup.Item>
+                <ListGroup.Item style={{ color: item.status === 'COMPLETED' ? 'green' : 'red' }}>Статус: {item.status}</ListGroup.Item>
                 <ListGroup.Item>Час: {new Date(item.createdAt).toLocaleTimeString()}</ListGroup.Item>
             </ListGroup>
             {/* <Card.Body>
