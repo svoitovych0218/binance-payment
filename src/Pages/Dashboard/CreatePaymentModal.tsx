@@ -61,7 +61,7 @@ export const CreatePaymentModal = ({ show, onClose, handleSubmit }: ICreatePayme
     return (
         <Modal show={show} onHide={onClose}>
             <Modal.Header closeButton>
-                <Modal.Title>Fill the form</Modal.Title>
+                <Modal.Title>Заповніть форму</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <Formik
