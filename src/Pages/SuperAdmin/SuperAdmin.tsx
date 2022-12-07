@@ -17,7 +17,6 @@ export const SuperAdmin = () => {
         setShowCreateOrganizationModal(true);
     }
     const handleModalSubmit = useCallback(async (organization: CreateOrganizationRequest) => {
-        console.log(organization);
         setOrganizations(prev => [...prev, { ...organization, _id: '4', SK: '4', payedTill: new Date().toISOString() }]);
         setShowCreateOrganizationModal(false);
     }, [setOrganizations])

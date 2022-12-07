@@ -1,35 +1,31 @@
-import React, { useCallback, useState } from 'react';
 import './App.css';
-import axios from 'axios';
 import { RouteHandler } from './RouteHandler';
-import { jwtInterceptor } from './api/auth/utils/jwtInterceptor'
 import { AuthProvider } from './providers/AuthProvider';
+import { useEffect } from 'react';
 
-interface IPaymentData {
-  prepayId: string;
-  terminalType: string;
-  expireTime: number;
-  qrcodeLink: string;
-  qrContent: string;
-  checkoutUrl: string;
-  deeplink: string;
-  universalUrl: string;
-}
 
-jwtInterceptor();
+
 
 const App = () => {
-  const [data, setData] = useState<IPaymentData | undefined>(undefined);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  // const [data, setData] = useState<IPaymentData | undefined>(undefined);
+  // const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const onPaymentClick = useCallback(async () => {
-    setIsLoading(true);
-    const res = await axios.post('https://ux8qu8rh13.execute-api.us-west-1.amazonaws.com/dev/create-order');
-    if (res.data.status === 'SUCCESS') {
-      setData(res.data.data);
+  // const onPaymentClick = useCallback(async () => {
+  //   setIsLoading(true);
+  //   const res = await axios.post('https://ux8qu8rh13.execute-api.us-west-1.amazonaws.com/dev/create-order');
+  //   if (res.data.status === 'SUCCESS') {
+  //     setData(res.data.data);
+  //   }
+  //   setIsLoading(false);
+  // }, [setData]);
+
+  useEffect(()=>{
+    console.log('App');
+
+    return () => {
+      console.log('Destruct App');
     }
-    setIsLoading(false);
-  }, [setData]);
+  }, []);
 
   return (
     // <div className="App">
@@ -42,10 +38,9 @@ const App = () => {
     //     {data && <a className='binance-pay' href={isMobile ? data?.deeplink : data?.checkoutUrl} target="_blank" rel="noreferrer">Pay</a>}
     //   </header>
     // </div>
-    <AuthProvider>
-        <RouteHandler />
+   <AuthProvider>
+      <RouteHandler />
     </AuthProvider>
-
   );
 }
 

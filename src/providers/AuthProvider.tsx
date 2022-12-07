@@ -1,4 +1,4 @@
-import { ReactElement, createContext } from 'react';
+import { ReactElement, createContext, useEffect } from 'react';
 
 import { IAuthProvider, useProvideAuth } from '../hooks/useProvideAuth';
 
@@ -8,7 +8,18 @@ interface AuthProviderProps {
     children: ReactElement<any, any>;
 }
 
+export enum UserRole {
+    Operator = "OPERATOR",
+    Admin = "ADMIN",
+    Owner = "ONWER",
+    SuperAdmin = "SUPERADMIN"
+}
+
 export function AuthProvider({ children }: AuthProviderProps) {
+    useEffect(() => {
+        console.log('AuthProvider');
+    }, []);
+
     const auth = useProvideAuth();
     return <AuthContext.Provider value={auth}>{children}</AuthContext.Provider>;
 }

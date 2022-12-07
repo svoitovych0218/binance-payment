@@ -1,8 +1,9 @@
-import axios from "axios"
 import { config } from "../config"
+import api from "./auth/utils/jwtInterceptor";
 
 export const getPayments = async () => {
-    const res = await axios.get(`${config.baseUrl}/payments`);
+    console.log('get payments');
+    const res = await api.get(`${config.baseUrl}/payments`);
 
     return res.data.data.payments;
 }

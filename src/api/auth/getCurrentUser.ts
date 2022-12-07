@@ -1,8 +1,8 @@
-import axios from "axios"
 import { config } from "../../config"
+import api from "./utils/jwtInterceptor";
 
 export const getCurrentUser = async () => {
-    const res = await axios.get(`${config.baseUrl}/users`);
+    const res = await api.get(`${config.baseUrl}/users`);
 
     return res.data.data.user;
 }

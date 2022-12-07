@@ -30,7 +30,7 @@ export const PaymentsTable = ({ items }: { items: IPaymentTableItem[] }) => {
                 </thead>
                 <tbody>
                     {items.map(s => (
-                        <tr>
+                        <tr key={s.SK}>
                             <td>{s.SK}</td>
                             <td>{s.amount}</td>
                             <td>{s.createdByUserName}</td>

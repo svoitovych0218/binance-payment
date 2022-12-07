@@ -1,54 +1,51 @@
-import { useEffect, useState } from 'react';
+import jwtDecode from 'jwt-decode';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getCurrentUser } from '../api/auth/getCurrentUser';
+import { ILoginRequest, login } from '../api/auth/login';
+import { UserRole } from '../providers/AuthProvider';
 
 interface IUser {
     user_id: string;
     user_sk: string;
-    user_role: string;
+    user_role: UserRole;
+    exp: number;
 }
 
 export function useProvideAuth() {
-    const [user, setUser] = useState<IUser | null>(null);
+    useEffect(()=>{
+        console.log('useProvideAuth');
+    }, [])
+    const [user, setUser] = useState<IUser | null>(() => {
+        const token = localStorage.getItem('idToken');
+        if (token) {
+            const user = jwtDecode(token);
+            return user as IUser;
+        }
+        return null;
+    });
+
     const navigate = useNavigate();
 
-    useEffect(() => {
-        reloadUserData();
-    }, [])
+    const signIn = useCallback(async (req: ILoginRequest) => {
+        const response = await login(req);
+        localStorage.setItem('idToken', response.token);
+        localStorage.setItem('refreshToken', response.refreshToken);
 
-    const reloadUserData = async () => {
-        const userData = await getCurrentUser();
-        const currentUser: IUser = {
-            ...userData,
-        };
+        const user = await getCurrentUser();
+        setUser(user);
+        navigate('/dashboard');
+    }, [navigate]);
 
-        setUser(currentUser);
-    };
-
-    const signOut = async () => {
-        localStorage.removeItem('idToken');
-        setUser(null);
-        navigate('/');
-    };
-
-    function checkIsLoggedIn() {
-        return !!localStorage.getItem('idToken');
-    }
-
-
-    const provider: IAuthProvider = {
+    const provider: IAuthProvider = useMemo(() => ({
         user,
-        reloadUserData,
-        signOut,
-        checkIsLoggedIn,
-    };
+        login: signIn
+    }), [user, signIn]);
 
     return provider;
 }
 
 export interface IAuthProvider {
     user: IUser | null;
-    reloadUserData: () => Promise<void>;
-    signOut: () => void;
-    checkIsLoggedIn: () => boolean;
+    login: (req: ILoginRequest) => Promise<void>;
 }

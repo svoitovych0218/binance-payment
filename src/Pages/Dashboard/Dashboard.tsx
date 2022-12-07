@@ -20,19 +20,24 @@ export const Dashboard = () => {
     const handleSubmitModal = async (values: ICreatePaymentFormProps) => {
         setShowCreatePaymentModal(false);
         await createSinglePayment({ receipeNumber: values.receipeNumber, amountBusd: values.amountBusd! });
-        await init();
-    }
-
-    const init = useCallback(async () => {
         const res = await getPayments();
         setPayments(res);
-    }, [setPayments])
+    }
+
+
 
     useEffect(() => {
-        init();
-    }, [init])
+        (async () => {
+            const res = await getPayments();
+            setPayments(res);
+        })();
+        console.log("Dashboard");
 
-    console.log(payments);
+        return () => {
+            console.log('Destruct Dashboard');
+        }
+    }, [])
+
     return (
         <Container>
             <div style={{ display: 'flex', justifyContent: 'space-between', margin: '20px 20px' }}>
@@ -42,8 +47,8 @@ export const Dashboard = () => {
             {/* <PaymentsTable items={payments} /> */}
             <Row>
                 {payments.map(s => (
-                    <Col md={3} sm={12}>
-                        <PaymentCard item={s} />
+                    <Col key={`col-${s.SK}`} md={3} sm={12}>
+                        <PaymentCard key={`pc-${s.SK}`} item={s} />
                     </Col>
                 ))}
             </Row>

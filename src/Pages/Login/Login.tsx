@@ -1,8 +1,6 @@
 import { Formik } from "formik";
 import { useCallback } from "react";
-import { Button, Container, Form, Modal } from "react-bootstrap"
-import { useNavigate } from "react-router-dom";
-import { login } from "../../api/auth/login";
+import { Button, Container, Form } from "react-bootstrap"
 import { FormField } from "../../Components/Inputs/FormField";
 import { useAuth } from "../../hooks/useAuth";
 
@@ -17,17 +15,10 @@ export const Login = () => {
         { organizationName: '', userName: '', password: '' }
 
     const auth = useAuth();
-    const navigate = useNavigate();
 
     const onSubmitHandler = useCallback(async (values: ILoginFormProps) => {
-        const token = await login(values);
-        localStorage.setItem('idToken', token);
-        console.log(token);
-        await auth?.reloadUserData();
-        navigate('/dashboard');
+        await auth!.login(values);
     }, [auth]);
-
-    console.log(auth?.user, navigate);
 
     return (
         <Container>

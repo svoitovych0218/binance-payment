@@ -1,5 +1,5 @@
-import axios from "axios"
 import { config } from "../config"
+import api from "./auth/utils/jwtInterceptor";
 
 interface ICreateSinglePaymentRequest {
     receipeNumber: string;
@@ -7,7 +7,7 @@ interface ICreateSinglePaymentRequest {
 }
 
 export const createSinglePayment = async (request: ICreateSinglePaymentRequest) => {
-    const res = await axios.post(`${config.baseUrl}/signle-payment`, request);
+    const res = await api.post(`${config.baseUrl}/signle-payment`, request);
 
     return res.status === 200;
 }
