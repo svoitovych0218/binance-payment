@@ -14,15 +14,11 @@ export const PaymentCard = ({ item }: { item: IPaymentTableItem }) => {
     return (
         <Card style={{ marginBottom: '50px' }}>
             <Card.Body>
-                <Card.Title style={{
-                    width: '100%',
-                    textOverflow: 'ellipsis',
-                    display: 'block',
-                    whiteSpace: 'nowrap'
-                }}>{`#${item.SK}`}</Card.Title>
+                <img width="100%" src="payment-logo.png" alt="make payment" />
             </Card.Body>
             <Card.Img variant="top" src={item.binanceResponse.data.qrcodeLink} />
             <ListGroup className="list-group-flush">
+                <ListGroup.Item>{`#${item.SK}`}</ListGroup.Item>
                 <ListGroup.Item>Ціна: {item.amount.toFixed(2)} BUSD</ListGroup.Item>
                 <ListGroup.Item>Створив: {item.createdByUserName}</ListGroup.Item>
                 <ListGroup.Item style={{ color: item.status === 'COMPLETED' ? 'green' : 'red' }}>Статус: {item.status}</ListGroup.Item>
