@@ -1,17 +1,17 @@
 import Container from 'react-bootstrap/Container';
-import { IPaymentTableItem } from './Table';
 import Button from 'react-bootstrap/Button';
 import { CreatePaymentModal, ICreatePaymentFormProps } from './CreatePaymentModal';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { createSinglePayment } from '../../api/createSinglePayment';
 import { getPayments } from '../../api/getPayments';
 import { PaymentCard } from './PaymentCard';
 import { Col, Row } from 'react-bootstrap';
+import { IPayment } from '../../types.ts/payment';
 
 export const Dashboard = () => {
     const [showCreatePaymentModal, setShowCreatePaymentModal] = useState<boolean>(false);
 
-    const [payments, setPayments] = useState<IPaymentTableItem[]>([]);
+    const [payments, setPayments] = useState<IPayment[]>([]);
 
     const handleCreatePaymentClick = () => {
         setShowCreatePaymentModal(true);
@@ -21,15 +21,13 @@ export const Dashboard = () => {
         setShowCreatePaymentModal(false);
         await createSinglePayment({ receipeNumber: values.receipeNumber, amountBusd: values.amountBusd! });
         const res = await getPayments();
-        setPayments(res);
+        setPayments(res.payments);
     }
-
-
 
     useEffect(() => {
         (async () => {
             const res = await getPayments();
-            setPayments(res);
+            setPayments(res.payments);
         })();
         console.log("Dashboard");
 

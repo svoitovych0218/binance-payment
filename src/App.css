@@ -28,6 +28,14 @@
   color: #61dafb;
 }
 
+.ml-4 {
+  margin-left: 4em;
+}
+
+.ml-2 {
+  margin-left: 2em;
+}
+
 .binance-checkout {
   padding: 20px 40px;
     border-radius: 10px;

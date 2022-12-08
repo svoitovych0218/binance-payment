@@ -11,6 +11,7 @@ import { Navigate } from 'react-router-dom';
 import { useAuth } from './hooks/useAuth';
 import { UserRole } from './providers/AuthProvider';
 import { useEffect } from 'react';
+import { TransactionHistory } from './Pages/TransactionHistory/TransactionHistory';
 
 export const RouteHandler = () => {
   return (
@@ -20,9 +21,9 @@ export const RouteHandler = () => {
         <Route path="/" element={
           <Navigate to='/dashboard' />
         } />
-        <Route path="/cabinet" element={
-          <RouteAuthGuard userRoles={[UserRole.Admin]} redirectTo="/login">
-            <Cabinet />
+        <Route path="/transaction-history" element={
+          <RouteAuthGuard userRoles={[UserRole.Owner, UserRole.Admin]} redirectTo="/login">
+            <TransactionHistory />
           </RouteAuthGuard>
         } />
         <Route path="/dashboard" element={

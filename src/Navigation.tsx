@@ -11,8 +11,8 @@ export const Navigation = () => {
             <Navbar.Collapse id='responsive-navbar-nav'>
                 <Nav className="mr-auto">
                     <Nav.Link href="/dashboard">Dashboard</Nav.Link>
-                    <Nav.Link href="#features">Configurations</Nav.Link>
-                    <Nav.Link href="#pricing">History</Nav.Link>
+                    <Nav.Link href="/transaction-history">Configurations</Nav.Link>
+                    <Nav.Link href="/transaction-history">Transaction History</Nav.Link>
                 </Nav>
                 {/* </Navbar.Collapse>
 
