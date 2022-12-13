@@ -1,27 +1,33 @@
+import { Button } from 'react-bootstrap';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
+import { useAuth } from './hooks/useAuth';
 
 export const Navigation = () => {
+    const auth = useAuth();
     return (
         <Container>
-        <Navbar bg="light" collapseOnSelect expand="lg" variant="light">
-            <Navbar.Brand href="#home">Crypto Payments</Navbar.Brand>
-            <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-            <Navbar.Collapse id='responsive-navbar-nav'>
-                <Nav className="mr-auto">
-                    <Nav.Link href="/dashboard">Dashboard</Nav.Link>
-                    <Nav.Link href="/configurations">Configurations</Nav.Link>
-                    <Nav.Link href="/transaction-history">Transaction History</Nav.Link>
-                </Nav>
-                {/* </Navbar.Collapse>
-
-                <Navbar.Collapse className="justify-content-end"> */}
-                {/* <Navbar.Text>
-                    Signed in as: <a href="#login">Mark Otto</a>
-                </Navbar.Text> */}
-            </Navbar.Collapse>
-        </Navbar>
+            <Navbar bg="light" collapseOnSelect expand="lg" variant="light">
+                <Navbar.Brand href="#home">Crypto Payments</Navbar.Brand>
+                <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+                {auth?.user && <Navbar.Collapse id='responsive-navbar-nav'>
+                    <Nav className="mr-auto">
+                        <Nav.Link href="/dashboard">Dashboard</Nav.Link>
+                        <Nav.Link href="/configurations">Configurations</Nav.Link>
+                        <Nav.Link href="/transaction-history">Transaction History</Nav.Link>
+                    </Nav>
+                </Navbar.Collapse>
+                }
+                {
+                    auth?.user && <Navbar.Collapse className="justify-content-end">
+                        <Navbar.Text>
+                            Signed in as: {auth?.user?.user_sk.replace('User-', '')} <br />
+                            <Button style={{ float: 'right' }} variant='secondary' onClick={() => auth?.logout()}>Вийти</Button>
+                        </Navbar.Text>
+                    </Navbar.Collapse>
+                }
+            </Navbar>
         </Container>
     )
 }

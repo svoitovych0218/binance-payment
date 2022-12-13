@@ -15,9 +15,6 @@ interface IUser {
 }
 
 export function useProvideAuth() {
-    useEffect(() => {
-        console.log('useProvideAuth');
-    }, [])
     const [user, setUser] = useState<IUser | null>(() => {
         const token = localStorage.getItem('idToken');
         if (token) {
@@ -39,6 +36,12 @@ export function useProvideAuth() {
         navigate('/dashboard');
     }, [navigate]);
 
+    const logout = useCallback(() => {
+        localStorage.removeItem('idToken');
+        localStorage.removeItem('refreshToken');
+        setUser(null);
+    }, [setUser]);
+
     const refresh = useCallback(async () => {
         const response = await refreshToken({ refreshToken: localStorage.getItem('refreshToken')! });
 
@@ -52,8 +55,9 @@ export function useProvideAuth() {
     const provider: IAuthProvider = useMemo(() => ({
         user,
         login: signIn,
-        refresh
-    }), [user, signIn, refresh]);
+        refresh,
+        logout
+    }), [user, signIn, refresh, logout]);
 
     return provider;
 }
@@ -62,4 +66,5 @@ export interface IAuthProvider {
     user: IUser | null;
     login: (req: ILoginRequest) => Promise<void>;
     refresh: () => Promise<void>;
+    logout: () => void;
 }

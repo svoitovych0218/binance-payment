@@ -29,7 +29,7 @@ export const UsersTable = () => {
                     {users.map(s => (
                         <tr key={s.SK}>
                             <td>{s.SK.replace('User-', '')}</td>
-                            <td>{s.name} UAH</td>
+                            <td>{s.name}</td>
                             <td>{s.email}</td>
                             <td>{s.role}</td>
                         </tr>
