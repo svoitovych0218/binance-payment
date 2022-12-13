@@ -14,7 +14,7 @@ export const FormField = ({ label, type, name, ...props }: FormFieldProps) => {
                 <FormGroup>
                     <FormLabel>{label}</FormLabel>
                     <FormControl isInvalid={!!form.errors[field.name]} type={type} value={field.value} onChange={props.onChange ?? (e => form.setFieldValue(field.name, e.target.value))} />
-                    <div>{form.errors[field.name] as string}</div>
+                    <div style={{color: 'red'}}>{form.errors[field.name] as string}</div>
                 </FormGroup>
             )}
             {...props}

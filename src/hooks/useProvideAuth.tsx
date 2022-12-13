@@ -3,17 +3,19 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getCurrentUser } from '../api/auth/getCurrentUser';
 import { ILoginRequest, login } from '../api/auth/login';
+import { refreshToken } from '../api/auth/refreshToken';
 import { UserRole } from '../providers/AuthProvider';
 
 interface IUser {
     user_id: string;
     user_sk: string;
     user_role: UserRole;
+    user_reset_password_required: boolean;
     exp: number;
 }
 
 export function useProvideAuth() {
-    useEffect(()=>{
+    useEffect(() => {
         console.log('useProvideAuth');
     }, [])
     const [user, setUser] = useState<IUser | null>(() => {
@@ -37,10 +39,21 @@ export function useProvideAuth() {
         navigate('/dashboard');
     }, [navigate]);
 
+    const refresh = useCallback(async () => {
+        const response = await refreshToken({ refreshToken: localStorage.getItem('refreshToken')! });
+
+        localStorage.setItem('idToken', response.token);
+        localStorage.setItem('refreshToken', response.refreshToken);
+
+        const user = await getCurrentUser();
+        setUser(user);
+    }, []);
+
     const provider: IAuthProvider = useMemo(() => ({
         user,
-        login: signIn
-    }), [user, signIn]);
+        login: signIn,
+        refresh
+    }), [user, signIn, refresh]);
 
     return provider;
 }
@@ -48,4 +61,5 @@ export function useProvideAuth() {
 export interface IAuthProvider {
     user: IUser | null;
     login: (req: ILoginRequest) => Promise<void>;
+    refresh: () => Promise<void>;
 }

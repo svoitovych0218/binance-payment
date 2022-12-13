@@ -12,6 +12,7 @@ import { useAuth } from './hooks/useAuth';
 import { UserRole } from './providers/AuthProvider';
 import { useEffect } from 'react';
 import { TransactionHistory } from './Pages/TransactionHistory/TransactionHistory';
+import { Users } from './Pages/Users/Users';
 
 export const RouteHandler = () => {
   return (
@@ -26,8 +27,13 @@ export const RouteHandler = () => {
             <TransactionHistory />
           </RouteAuthGuard>
         } />
+        <Route path="/configurations" element={
+          <RouteAuthGuard userRoles={[UserRole.Admin, UserRole.Owner]} redirectTo="/login">
+            <Users />
+          </RouteAuthGuard>
+        } />
         <Route path="/dashboard" element={
-          <RouteAuthGuard userRoles={[UserRole.Admin, UserRole.Operator]} redirectTo="/login">
+          <RouteAuthGuard userRoles={[UserRole.Admin, UserRole.Operator, UserRole.Owner]} redirectTo="/login">
             <Dashboard />
           </RouteAuthGuard>
         } />
@@ -43,7 +49,7 @@ export const RouteHandler = () => {
 }
 
 export function RouteAuthGuard({ children, redirectTo, userRoles }: { children: any, redirectTo: any, userRoles: UserRole[] }) {
-  useEffect(()=>{
+  useEffect(() => {
     console.log('RouteAuthGuard');
   }, [])
   const auth = useAuth();

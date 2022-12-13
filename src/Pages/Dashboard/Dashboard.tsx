@@ -19,7 +19,7 @@ export const Dashboard = () => {
 
     const handleSubmitModal = async (values: ICreatePaymentFormProps) => {
         setShowCreatePaymentModal(false);
-        await createSinglePayment({ receipeNumber: values.receipeNumber, amountBusd: values.amountBusd! });
+        await createSinglePayment({ receipeNumber: values.receipeNumber, amountBusd: values.amountBusd!, amountUah: values.amountUAH! });
         const res = await getPayments();
         setPayments(res.payments);
     }
