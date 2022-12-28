@@ -13,8 +13,8 @@ export interface IPaymentTableItem {
 export const PaymentCard = ({ item }: { item: IPaymentTableItem }) => {
     return (
         <Card style={{ marginBottom: '50px' }}>
-            <Card.Body>
-                <img width="100%" src="payment-logo.png" alt="make payment" />
+            <Card.Body style={{display: 'flex', justifyContent: 'center'}}>
+                <img width="100%" src="logo_black.jpg" alt="make payment" />
             </Card.Body>
             <Card.Img variant="top" src={item.binanceResponse.data.qrcodeLink} />
             <ListGroup className="list-group-flush">

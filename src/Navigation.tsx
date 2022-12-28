@@ -23,7 +23,7 @@ export const Navigation = () => {
                     {
                         auth?.user && <Navbar.Collapse className="justify-content-end">
                             <Navbar.Text>
-                                Signed in as: {auth?.user?.user_sk.replace('User-', '')} <br />
+                                Signed in as: {auth?.user?.user_sk?.replace('User-', '') ?? ''} <br />
                                 <Button style={{ float: 'right' }} variant='secondary' onClick={() => auth?.logout()}>Вийти</Button>
                             </Navbar.Text>
                         </Navbar.Collapse>
