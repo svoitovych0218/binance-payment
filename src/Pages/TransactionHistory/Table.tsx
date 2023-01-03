@@ -1,6 +1,8 @@
-import { useEffect, useState } from 'react';
-import { Form } from 'react-bootstrap';
+import { useCallback, useEffect, useState } from 'react';
+import { Button, Form, FormGroup } from 'react-bootstrap';
 import Table from 'react-bootstrap/Table';
+import { toast } from 'react-toastify';
+import { getExcelReport } from '../../api/getExcelReport';
 import { getPayments } from '../../api/getPayments';
 import { IPayment } from '../../types.ts/payment';
 
@@ -12,6 +14,19 @@ interface IFilters {
 
 const formatDate = (date: Date) => {
     return date.toISOString().split('T')[0];
+}
+
+const getColorFromStatus = (status: string) => {
+    switch (status) {
+        case 'COMPLETED':
+            return 'green';
+        case 'PENDING':
+            return 'blue';
+        case 'CANCELLED':
+            return 'RED';
+        default:
+            return 'gray';
+    }
 }
 
 export const PaymentsTable = () => {
@@ -34,12 +49,21 @@ export const PaymentsTable = () => {
             setPayments(res.payments);
             setCompletedTotal(res.completedPaymentsSum);
         })()
-    }, [filters])
+    }, [filters]);
+
+    const getExcellReportCallback = useCallback(async () => {
+        try {
+            const url = await getExcelReport(new Date(filters.from).toISOString(), new Date(filters.to).toISOString(), filters.paidOnly);
+            window.open(url);
+        } catch (e: any) {
+            toast(e.response?.data?.message ?? 'Something went wrong', { type: 'error' });
+        }
+    }, [filters]);
 
     return (
         <>
-            <div style={{display: 'flex', margin: '20px 0'}}>
-                <Form.Group style={{display: 'flex'}}>
+            <div style={{ display: 'flex', margin: '20px 0' }}>
+                <Form.Group style={{ display: 'flex' }}>
                     <Form.Label>From</Form.Label>
                     <Form.Control
                         style={{ width: '300px' }}
@@ -50,7 +74,7 @@ export const PaymentsTable = () => {
                         name='from'
                         onChange={(e) => setFilters(prev => ({ ...prev, from: e.target.value }))} />
                 </Form.Group>
-                <Form.Group className='ml-4' style={{display: 'flex'}}>
+                <Form.Group className='ml-4' style={{ display: 'flex' }}>
                     <Form.Label>To</Form.Label>
                     <Form.Control
                         className='ml-2'
@@ -63,6 +87,9 @@ export const PaymentsTable = () => {
                 <Form.Group className='ml-4'>
                     <Form.Check label="Paid only" checked={filters.paidOnly} onChange={() => setFilters(prev => ({ ...prev, paidOnly: !prev.paidOnly }))} />
                 </Form.Group>
+                <FormGroup className='ml-4'>
+                    <Button variant='outline-primary' onClick={() => getExcellReportCallback()}>Excel Звіт</Button>
+                </FormGroup>
             </div>
             <div>
                 {completedTotal && <h6>Completed payments total amount: {completedTotal.toFixed(2)}</h6>}
@@ -75,7 +102,9 @@ export const PaymentsTable = () => {
                         <th>Amount</th>
                         <th>Created by</th>
                         <th>Status</th>
+                        <th>Cancelled by</th>
                         <th>Created at</th>
+                        <th>Paid at</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -85,8 +114,10 @@ export const PaymentsTable = () => {
                             <td>{s.amountUAH} UAH</td>
                             <td>{s.amount.toFixed(2)} {s.currency}</td>
                             <td>{s.createdByUserName}</td>
-                            <td style={{ color: s.status === 'COMPLETED' ? 'green' : '' }}>{s.status}</td>
+                            <td style={{ color: getColorFromStatus(s.status) }}>{s.status}</td>
+                            <td>{s.cancelledBy}</td>
                             <td>{new Date(s.createdAt).toLocaleDateString() + ' ' + new Date(s.createdAt).toLocaleTimeString()}</td>
+                            <td>{s.paidAt}</td>
                         </tr>
                     ))}
                 </tbody>

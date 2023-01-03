@@ -6,14 +6,14 @@ export interface FormFieldProps extends FieldAttributes<any> {
     type: string;
     name: string;
 }
-export const FormField = ({ label, type, name, ...props }: FormFieldProps) => {
+export const FormField = ({ label, type, name, className, required, ...props }: FormFieldProps) => {
     return (
         <Field
             name={name}
             render={({ field, form }: FieldProps<any>) => (
-                <FormGroup>
+                <FormGroup className={className}>
                     <FormLabel>{label}</FormLabel>
-                    <FormControl isInvalid={!!form.errors[field.name]} type={type} value={field.value} onChange={props.onChange ?? (e => form.setFieldValue(field.name, e.target.value))} />
+                    <FormControl required={required} isInvalid={!!form.errors[field.name]} type={type} value={field.value} onChange={props.onChange ?? (e => form.setFieldValue(field.name, e.target.value))} />
                     <div style={{color: 'red'}}>{form.errors[field.name] as string}</div>
                 </FormGroup>
             )}

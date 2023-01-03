@@ -1,6 +1,7 @@
 import jwtDecode from 'jwt-decode';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { getCurrentUser } from '../api/auth/getCurrentUser';
 import { ILoginRequest, login } from '../api/auth/login';
 import { refreshToken } from '../api/auth/refreshToken';
@@ -27,13 +28,17 @@ export function useProvideAuth() {
     const navigate = useNavigate();
 
     const signIn = useCallback(async (req: ILoginRequest) => {
-        const response = await login(req);
-        localStorage.setItem('idToken', response.token);
-        localStorage.setItem('refreshToken', response.refreshToken);
+        try {
+            const response = await login(req);
+            localStorage.setItem('idToken', response.token);
+            localStorage.setItem('refreshToken', response.refreshToken);
 
-        const user = await getCurrentUser();
-        setUser(user);
-        navigate('/dashboard');
+            const user = await getCurrentUser();
+            setUser(user);
+            navigate('/dashboard');
+        } catch (e:any) {
+            toast(e.response?.data?.message ?? 'Something went wrong', {type:'error'});
+        }
     }, [navigate]);
 
     const logout = useCallback(() => {

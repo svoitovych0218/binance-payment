@@ -1,12 +1,14 @@
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import { CreatePaymentModal, ICreatePaymentFormProps } from './CreatePaymentModal';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { createSinglePayment } from '../../api/createSinglePayment';
 import { getPayments } from '../../api/getPayments';
 import { PaymentCard } from './PaymentCard';
 import { Col, Row } from 'react-bootstrap';
 import { IPayment } from '../../types.ts/payment';
+import { cancelPayment } from '../../api/cancelPayment';
+import { toast } from 'react-toastify';
 
 export const Dashboard = () => {
     const [showCreatePaymentModal, setShowCreatePaymentModal] = useState<boolean>(false);
@@ -34,6 +36,21 @@ export const Dashboard = () => {
         return () => {
             console.log('Destruct Dashboard');
         }
+    }, []);
+
+    const cancelPaymentCallback = useCallback(async (paymentSK: string) => {
+        try {
+            const success = await cancelPayment(paymentSK);
+            if (!success) {
+                toast('Something went wrong', { type: 'error' });
+                return;
+            }
+            const res = await getPayments();
+            setPayments(res.payments);
+            toast('Successfully cancelled', { type: 'success' });
+        } catch (e:any) {
+            toast(e.response?.data?.message ?? 'Something went wrong', { type: 'error' });
+        }
     }, [])
 
     return (
@@ -46,7 +63,7 @@ export const Dashboard = () => {
             <Row>
                 {payments.map(s => (
                     <Col key={`col-${s.SK}`} md={3} sm={12}>
-                        <PaymentCard key={`pc-${s.SK}`} item={s} />
+                        <PaymentCard key={`pc-${s.SK}`} item={s} cancelPayment={cancelPaymentCallback} />
                     </Col>
                 ))}
             </Row>

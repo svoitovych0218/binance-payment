@@ -7,4 +7,5 @@ export interface IUser {
     role: UserRole;
     email: string;
     passwordHash: string;
+    active: boolean;
   }

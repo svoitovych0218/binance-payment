@@ -13,6 +13,7 @@ import { UserRole } from './providers/AuthProvider';
 import { useEffect } from 'react';
 import { TransactionHistory } from './Pages/TransactionHistory/TransactionHistory';
 import { Users } from './Pages/Users/Users';
+import { ApiKeys } from './Pages/ApiKeys/ApiKeys';
 
 export const RouteHandler = () => {
   return (
@@ -40,6 +41,11 @@ export const RouteHandler = () => {
         <Route path="/super-admin" element={
           <RouteAuthGuard userRoles={[UserRole.SuperAdmin]} redirectTo="/login">
             <SuperAdmin />
+          </RouteAuthGuard>
+        } />
+        <Route path="/api-keys" element={
+          <RouteAuthGuard userRoles={[UserRole.Owner]} redirectTo="/dashboard">
+            <ApiKeys />
           </RouteAuthGuard>
         } />
         <Route path="/login" element={<Login />} />

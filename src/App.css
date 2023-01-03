@@ -45,6 +45,10 @@
     cursor: pointer;
 }
 
+.f-right {
+  float: right;
+}
+
 .binance-pay {
     margin-top: 30px;
     border: 1px solid white;

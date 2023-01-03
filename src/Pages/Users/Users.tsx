@@ -11,6 +11,7 @@ export const Users = () => {
         await createUser(values);
         setShowCreatePaymentModal(false);
     }
+
     return (
         <Container>
             <div style={{ display: 'flex', justifyContent: 'space-between', margin: '20px 20px' }}>

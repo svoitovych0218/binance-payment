@@ -11,7 +11,7 @@ interface AuthProviderProps {
 export enum UserRole {
     Operator = "OPERATOR",
     Admin = "ADMIN",
-    Owner = "ONWER",
+    Owner = "OWNER",
     SuperAdmin = "SUPERADMIN"
 }
 
