@@ -1,6 +1,6 @@
 import { Formik } from "formik";
 import { useCallback } from "react";
-import { Button, Container, Form } from "react-bootstrap"
+import { Button, Col, Container, Form, Row } from "react-bootstrap"
 import { FormField } from "../../Components/Inputs/FormField";
 import { useAuth } from "../../hooks/useAuth";
 
@@ -22,30 +22,37 @@ export const Login = () => {
 
     return (
         <Container>
-            <Formik
-                initialValues={initialValues}
-                onSubmit={onSubmitHandler}
-            >
-                {({
-                    values,
-                    errors,
-                    touched,
-                    handleChange,
-                    handleBlur,
-                    handleSubmit,
-                    isSubmitting,
-                    /* and other goodies */
-                }) => (
-                    <Form onSubmit={handleSubmit}>
-                        <FormField name='organizationName' label='Організація' type='text' />
-                        <FormField name='userName' label='Логін' type='text' />
-                        <FormField name='password' label='Пароль' type='password' />
-                        <Button type="submit" variant="primary">
-                            Log In
-                        </Button>
-                    </Form>
-                )}
-            </Formik>
+            <Row>
+                <Col md={4} sm={12}></Col>
+                <Col md={4} sm={12}>
+                <Formik
+                    initialValues={initialValues}
+                    onSubmit={onSubmitHandler}
+                >
+                    {({
+                        values,
+                        errors,
+                        touched,
+                        handleChange,
+                        handleBlur,
+                        handleSubmit,
+                        isSubmitting,
+                        /* and other goodies */
+                    }) => (
+                        <Form onSubmit={handleSubmit}>
+                            <FormField name='organizationName' label='Організація' type='text' />
+                            <FormField name='userName' label='Логін' type='text' />
+                            <FormField name='password' label='Пароль' type='password' />
+                            <Button className="mt-4 w-100" type="submit" variant="primary">
+                                Log In
+                            </Button>
+                            <a href='/password-recovery'>Забули пароль ?</a>
+                        </Form>
+                    )}
+                </Formik>
+                </Col>
+                <Col md={4} sm={12}></Col>
+            </Row>
         </Container>
     )
 }

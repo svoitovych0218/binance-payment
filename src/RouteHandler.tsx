@@ -14,6 +14,8 @@ import { useEffect } from 'react';
 import { TransactionHistory } from './Pages/TransactionHistory/TransactionHistory';
 import { Users } from './Pages/Users/Users';
 import { ApiKeys } from './Pages/ApiKeys/ApiKeys';
+import { PasswordRecoveryRequest } from './Pages/PasswordRecovery/PasswordRecoveryRequest';
+import { PasswordRecoveryConfirmation } from './Pages/PasswordRecoveryConfirmation/PasswordRecoveryConfirmation';
 
 export const RouteHandler = () => {
   return (
@@ -48,6 +50,13 @@ export const RouteHandler = () => {
             <ApiKeys />
           </RouteAuthGuard>
         } />
+        <Route path="/password-recovery" element={
+          <PasswordRecoveryRequest />
+        } />
+        <Route path="/recovery-password-confirmation*" element={
+          <PasswordRecoveryConfirmation />
+        }
+        />
         <Route path="/login" element={<Login />} />
       </Routes>
     </>
