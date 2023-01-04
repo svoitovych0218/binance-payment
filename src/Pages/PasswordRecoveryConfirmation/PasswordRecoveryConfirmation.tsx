@@ -13,7 +13,7 @@ interface ILoginFormProps {
 }
 
 export const PasswordRecoveryConfirmation = () => {
-    const [requestSent, setRequestSent] = useState<boolean>(true);
+    const [requestSent, setRequestSent] = useState<boolean>(false);
     const initialValues: ILoginFormProps =
         { password: '', repeatPassword: '' }
 
