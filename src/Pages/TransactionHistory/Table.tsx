@@ -98,13 +98,13 @@ export const PaymentsTable = () => {
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Amount</th>
-                        <th>Amount</th>
-                        <th>Created by</th>
-                        <th>Status</th>
-                        <th>Cancelled by</th>
-                        <th>Created at</th>
-                        <th>Paid at</th>
+                        <th>Сума</th>
+                        <th>Сума</th>
+                        <th>Створив</th>
+                        <th>Статус</th>
+                        <th>Відмінив</th>
+                        <th>Створено</th>
+                        <th>Оплачено</th>
                     </tr>
                 </thead>
                 <tbody>
