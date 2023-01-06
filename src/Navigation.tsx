@@ -12,13 +12,13 @@ export const Navigation = () => {
         <Container>
             <Row>
                 <Navbar style={{ padding: '0 15px 0 15px' }} bg="light" collapseOnSelect expand="lg" variant="light">
-                    <Navbar.Brand href="#home">Crypto Payments</Navbar.Brand>
+                    <Navbar.Brand href="#home">MakePay</Navbar.Brand>
                     <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                     {auth?.user && <Navbar.Collapse id='responsive-navbar-nav'>
                         <Nav className="mr-auto">
-                            <Nav.Link href="/dashboard">Dashboard</Nav.Link>
-                            <Nav.Link href="/configurations">Configurations</Nav.Link>
-                            <Nav.Link href="/transaction-history">Transaction History</Nav.Link>
+                            <Nav.Link href="/dashboard">Робоча зона</Nav.Link>
+                            <Nav.Link href="/configurations">Конфігурація користувачів</Nav.Link>
+                            <Nav.Link href="/transaction-history">Історія транзакцій</Nav.Link>
                             {auth?.user.user_role === UserRole.Owner && <Nav.Link href='api-keys'>API Keys</Nav.Link>}
                         </Nav>
                     </Navbar.Collapse>
@@ -28,7 +28,7 @@ export const Navigation = () => {
                             <Navbar.Text>
                                 <Dropdown>
                                     <Dropdown.Toggle variant="outline-primary" id="dropdown-basic">
-                                        Signed in as: {auth?.user?.user_sk?.replace('User-', '') ?? ''}
+                                        Авторизовано: {auth?.user?.user_sk?.replace('User-', '') ?? ''}
                                     </Dropdown.Toggle>
                                     <Dropdown.Menu>
                                         <Dropdown.Item onClick={() => auth?.logout()}>Вийти</Dropdown.Item>

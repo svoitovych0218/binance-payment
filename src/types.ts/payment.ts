@@ -17,6 +17,6 @@ export interface IPayment {
     PENDING = 'PENDING',
     COMPLETED = 'COMPLETED',
     REJECTED = 'REJECTED',
-    CANCELED = 'CANCELLED',
+    CANCELLED = 'CANCELLED',
   }
   
