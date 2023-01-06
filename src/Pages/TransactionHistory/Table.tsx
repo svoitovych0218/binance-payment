@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 import { getExcelReport } from '../../api/getExcelReport';
 import { getPayments } from '../../api/getPayments';
 import { IPayment } from '../../types.ts/payment';
+import { getLocalizedStatus } from '../../utils/statuses';
 
 interface IFilters {
     from: string;
@@ -114,7 +115,7 @@ export const PaymentsTable = () => {
                             <td>{s.amountUAH} UAH</td>
                             <td>{s.amount.toFixed(2)} {s.currency}</td>
                             <td>{s.createdByUserName}</td>
-                            <td style={{ color: getColorFromStatus(s.status) }}>{s.status}</td>
+                            <td style={{ color: getColorFromStatus(s.status) }}>{getLocalizedStatus(s.status)}</td>
                             <td>{s.cancelledBy}</td>
                             <td>{new Date(s.createdAt).toLocaleDateString() + ' ' + new Date(s.createdAt).toLocaleTimeString()}</td>
                             <td>{s.paidAt}</td>
