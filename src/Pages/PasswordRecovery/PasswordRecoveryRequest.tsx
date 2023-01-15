@@ -4,7 +4,6 @@ import { Button, Col, Container, Form, Row } from "react-bootstrap"
 import { toast } from "react-toastify";
 import { recoverPassword } from "../../api/recoverPasswordRequest";
 import { FormField } from "../../Components/Inputs/FormField";
-import { useAuth } from "../../hooks/useAuth";
 
 interface ILoginFormProps {
     organization: string,

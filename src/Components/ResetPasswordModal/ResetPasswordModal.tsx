@@ -13,7 +13,7 @@ interface IResetPasswordFormProps {
 
 const validation = Yup.object().shape({
     password: Yup.string(),
-    repeatPassword: Yup.string().test('passwords-match', 'Паролі відрізняються', function (value) { 
+    repeatPassword: Yup.string().test('passwords-match', 'Паролі відрізняються', function (value) {
         console.log(value);
         return this.parent.password === value
     })
@@ -27,14 +27,14 @@ export const ResetPasswordModal = () => {
 
     const auth = useAuth();
 
-    const handleSubmit = useCallback(async (values: {password: string, repeatPassword: string}) => {
-      await changePassword(values);
-      await auth?.refresh();
+    const handleSubmit = useCallback(async (values: { password: string, repeatPassword: string }) => {
+        await changePassword(values);
+        await auth?.refresh();
     }, [auth]);
-  
+
     const showModal = useMemo(() => {
-      const result = !!auth?.user?.user_reset_password_required;
-      return result;
+        const result = !!(auth?.user as any).user_reset_password_required;
+        return result;
     }, [auth])
 
     return (

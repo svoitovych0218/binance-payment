@@ -3,7 +3,6 @@ import {
   Route,
 } from 'react-router-dom';
 import { Navigation } from './Navigation';
-import { Cabinet } from './Pages/Cabinet/Cabinet';
 import { Dashboard } from './Pages/Dashboard/Dashboard';
 import { Login } from './Pages/Login/Login';
 import { SuperAdmin } from './Pages/SuperAdmin/SuperAdmin';
@@ -16,6 +15,10 @@ import { Users } from './Pages/Users/Users';
 import { ApiKeys } from './Pages/ApiKeys/ApiKeys';
 import { PasswordRecoveryRequest } from './Pages/PasswordRecovery/PasswordRecoveryRequest';
 import { PasswordRecoveryConfirmation } from './Pages/PasswordRecoveryConfirmation/PasswordRecoveryConfirmation';
+import { Registration } from './Pages/Registration/Registration';
+import { PagePreloader } from './Components/PagePreloader/PagePreloader';
+import { EmailConfirmation } from './Pages/EmailConfirmation/EmailConfirmation';
+import { EmailNotActivated } from './Pages/EmailNotActivated/EmailNotActivated';
 
 export const RouteHandler = () => {
   return (
@@ -58,6 +61,9 @@ export const RouteHandler = () => {
         }
         />
         <Route path="/login" element={<Login />} />
+        <Route path="/registration" element={<Registration />} />
+        <Route path="/email-confirmation" element={<EmailConfirmation />} />
+        <Route path='/email-not-confirmed' element={<EmailNotActivated />} />
       </Routes>
     </>
   )
@@ -66,7 +72,20 @@ export const RouteHandler = () => {
 export function RouteAuthGuard({ children, redirectTo, userRoles }: { children: any, redirectTo: any, userRoles: UserRole[] }) {
   useEffect(() => {
     console.log('RouteAuthGuard');
-  }, [])
+  }, []);
   const auth = useAuth();
-  return !!auth?.user ? children : <Navigate to={redirectTo} replace />;
+  auth?.authenticate();
+  console.log('isLoading', auth?.isLoading);
+  console.log('user:', auth?.user)
+  return !!auth?.isLoading
+    ? <PagePreloader />
+    : !!auth?.user
+      ? !!auth?.user?.emailConfirmed
+        ? userRoles.some(s => {
+          return s === auth?.user?.role
+        })
+          ? children
+          : <Navigate to={'/dashboard'} />
+        : <Navigate to={'/email-not-confirmed'} />
+      : <Navigate to={redirectTo} replace />;
 }

@@ -19,7 +19,7 @@ export const Navigation = () => {
                             <Nav.Link href="/dashboard">Робоча зона</Nav.Link>
                             <Nav.Link href="/configurations">Конфігурація користувачів</Nav.Link>
                             <Nav.Link href="/transaction-history">Історія транзакцій</Nav.Link>
-                            {auth?.user.user_role === UserRole.Owner && <Nav.Link href='api-keys'>API Keys</Nav.Link>}
+                            {auth?.user.role === UserRole.Owner && <Nav.Link href='api-keys'>API Keys</Nav.Link>}
                         </Nav>
                     </Navbar.Collapse>
                     }
@@ -28,7 +28,7 @@ export const Navigation = () => {
                             <Navbar.Text>
                                 <Dropdown>
                                     <Dropdown.Toggle variant="outline-primary" id="dropdown-basic">
-                                        Авторизовано: {auth?.user?.user_sk?.replace('User-', '') ?? ''}
+                                        Авторизовано: {auth?.user?.SK?.replace('User-', '') ?? ''}
                                     </Dropdown.Toggle>
                                     <Dropdown.Menu>
                                         <Dropdown.Item onClick={() => auth?.logout()}>Вийти</Dropdown.Item>

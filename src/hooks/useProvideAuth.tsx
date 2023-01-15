@@ -1,50 +1,53 @@
-import jwtDecode from 'jwt-decode';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
 import { getCurrentUser } from '../api/auth/getCurrentUser';
-import { ILoginRequest, login } from '../api/auth/login';
 import { refreshToken } from '../api/auth/refreshToken';
 import { UserRole } from '../providers/AuthProvider';
 
 interface IUser {
-    user_id: string;
-    user_sk: string;
-    user_role: UserRole;
-    user_reset_password_required: boolean;
-    exp: number;
+    _id: string;
+    SK: string;
+    name: string;
+    role: UserRole;
+    email: string;
+    active: boolean;
+    emailConfirmed?: boolean;
 }
 
 export function useProvideAuth() {
-    const [user, setUser] = useState<IUser | null>(() => {
-        const token = localStorage.getItem('idToken');
-        if (token) {
-            const user = jwtDecode(token);
-            return user as IUser;
-        }
-        return null;
-    });
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [user, setUser] = useState<IUser | null>(null);
 
     const navigate = useNavigate();
 
-    const signIn = useCallback(async (req: ILoginRequest) => {
-        try {
-            const response = await login(req);
-            localStorage.setItem('idToken', response.token);
-            localStorage.setItem('refreshToken', response.refreshToken);
+    const loadUser = async () => {
+        const token = localStorage.getItem('idToken');
 
-            const user = await getCurrentUser();
-            setUser(user);
-            navigate('/dashboard');
-        } catch (e:any) {
-            toast(e.response?.data?.message ?? 'Something went wrong', {type:'error'});
+        if (token) {
+            const res = await getCurrentUser();
+            setUser(res);
+        } else {
+            setUser(null);
         }
-    }, [navigate]);
+        setIsLoading(false);
+    }
+
+    const authenticate = useCallback(async () => {
+        setIsLoading(true);
+        if (!user)
+            await loadUser();
+        setIsLoading(false);
+    }, [])
+
+    useEffect(() => {
+        loadUser();
+    }, []);
 
     const logout = useCallback(() => {
         localStorage.removeItem('idToken');
         localStorage.removeItem('refreshToken');
         setUser(null);
+        navigate('/login');
     }, [setUser]);
 
     const refresh = useCallback(async () => {
@@ -58,18 +61,20 @@ export function useProvideAuth() {
     }, []);
 
     const provider: IAuthProvider = useMemo(() => ({
+        authenticate,
+        isLoading,
         user,
-        login: signIn,
         refresh,
         logout
-    }), [user, signIn, refresh, logout]);
+    }), [user, refresh, logout, isLoading]);
 
     return provider;
 }
 
 export interface IAuthProvider {
+    authenticate: () => Promise<void>;
+    isLoading: boolean;
     user: IUser | null;
-    login: (req: ILoginRequest) => Promise<void>;
     refresh: () => Promise<void>;
     logout: () => void;
 }
