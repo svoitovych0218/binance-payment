@@ -74,7 +74,6 @@ export function RouteAuthGuard({ children, redirectTo, userRoles }: { children: 
     console.log('RouteAuthGuard');
   }, []);
   const auth = useAuth();
-  auth?.authenticate();
   console.log('isLoading', auth?.isLoading);
   console.log('user:', auth?.user)
   return !!auth?.isLoading

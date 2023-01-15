@@ -21,7 +21,7 @@ export const Login = () => {
     useEffect(()=>{
         const token = localStorage.getItem('idToken');
         if (token){
-            navigate('/dashboard');
+            window.location.href ='/dashboard';
         }
     }, []);
 
@@ -31,7 +31,7 @@ export const Login = () => {
             localStorage.setItem('idToken', response.token);
             localStorage.setItem('refreshToken', response.refreshToken);
 
-            navigate('/dashboard');
+            window.location.href ='/dashboard';
         } catch (e: any) {
             toast(e.response?.data?.message ?? 'Something went wrong', { type: 'error' });
         }

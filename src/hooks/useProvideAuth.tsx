@@ -32,13 +32,6 @@ export function useProvideAuth() {
         setIsLoading(false);
     }
 
-    const authenticate = useCallback(async () => {
-        setIsLoading(true);
-        if (!user)
-            await loadUser();
-        setIsLoading(false);
-    }, [])
-
     useEffect(() => {
         loadUser();
     }, []);
@@ -61,7 +54,6 @@ export function useProvideAuth() {
     }, []);
 
     const provider: IAuthProvider = useMemo(() => ({
-        authenticate,
         isLoading,
         user,
         refresh,
@@ -72,7 +64,6 @@ export function useProvideAuth() {
 }
 
 export interface IAuthProvider {
-    authenticate: () => Promise<void>;
     isLoading: boolean;
     user: IUser | null;
     refresh: () => Promise<void>;
