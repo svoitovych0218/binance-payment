@@ -6,6 +6,7 @@ import { getExcelReport } from '../../api/getExcelReport';
 import { getPayments } from '../../api/getPayments';
 import { IPayment } from '../../types.ts/payment';
 import { getLocalizedStatus } from '../../utils/statuses';
+import { getFormattedDateInLocalTimeZone } from 'utils/date';
 
 interface IFilters {
     from: string;
@@ -117,8 +118,8 @@ export const PaymentsTable = () => {
                             <td>{s.createdByUserName}</td>
                             <td style={{ color: getColorFromStatus(s.status) }}>{getLocalizedStatus(s.status)}</td>
                             <td>{s.cancelledBy}</td>
-                            <td>{new Date(s.createdAt).toLocaleDateString() + ' ' + new Date(s.createdAt).toLocaleTimeString()}</td>
-                            <td>{s.paidAt}</td>
+                            <td>{getFormattedDateInLocalTimeZone(s.createdAt)}</td>
+                            <td>{s.paidAt && getFormattedDateInLocalTimeZone(s.paidAt)}</td>
                         </tr>
                     ))}
                 </tbody>

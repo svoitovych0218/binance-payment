@@ -4,6 +4,7 @@ import { ICreateUserRequest } from "../../api/createUser";
 import { FormField } from "../../Components/Inputs/FormField";
 import { FormSelect } from "../../Components/Inputs/FormSelect";
 import { UserRole } from "../../providers/AuthProvider";
+import { createUserSchema } from "./validationSchemas";
 
 interface ICreateUserModalProps {
     show: boolean;
@@ -37,8 +38,10 @@ export const CreateUserModal = ({ show, handleClose, handleSubmit }: ICreateUser
             </Modal.Header>
             <Modal.Body>
                 <Formik
+                    validateOnChange
                     initialValues={initialValues}
                     onSubmit={handleSubmit}
+                    validationSchema={createUserSchema}
                 >
                     {({
                         values,
@@ -48,7 +51,8 @@ export const CreateUserModal = ({ show, handleClose, handleSubmit }: ICreateUser
                         handleBlur,
                         handleSubmit,
                         isSubmitting,
-                        setFieldValue
+                        setFieldValue,
+                        isValidating,
                         /* and other goodies */
                     }) => {
                         return (
@@ -59,7 +63,7 @@ export const CreateUserModal = ({ show, handleClose, handleSubmit }: ICreateUser
                                 <FormField name="email" label='Email' type='email' />
                                 <FormField name="password" label='Пароль' type='password' />
                                 <FormSelect name="userRole" label="Роль" options={[{ value: UserRole.Admin, label: 'Адмін' }, { value: UserRole.Operator, label: 'Оператор' }]} />
-                                <Button style={{margin: '20px auto 0 auto'}} variant="primary" type='submit'>
+                                <Button disabled={isValidating} style={{margin: '20px auto 0 auto'}} variant="primary" type='submit'>
                                     Створити
                                 </Button>
                             </Form>

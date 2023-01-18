@@ -1,3 +1,4 @@
+import { routes } from "constants/routes";
 import { useEffect, useMemo, useState } from "react";
 import { Col, Container, Form, Row } from "react-bootstrap"
 import { Link, useNavigate } from "react-router-dom";
@@ -30,7 +31,7 @@ export const EmailConfirmation = () => {
             setSuccess(true);
             setRequestSent(true);
             setTimeout(() => {
-                navigate('/login');
+                navigate(routes.login);
             }, 3000);
         } catch {
             toast("Помилка. Посилання невалідне", { type: 'error' });
@@ -49,7 +50,7 @@ export const EmailConfirmation = () => {
                 <Col md={4} sm={12}></Col>
                 {requestSent && success ? <Col md={4} sm={12}>
                     Дякуюємо! Ваша електронна адреса підтверджена. Ми перенаправляємо вас на сторінку входу {' '}
-                    <Link to={'/login'}>Увійти</Link>
+                    <Link to={routes.login}>Увійти</Link>
                 </Col> : <Col md={4} sm={12}>
                     {(wrongUrl || (requestSent && !success)) && 'Помилка. Посилання на активацію електронної адреси не дійсне'}
                 </Col>

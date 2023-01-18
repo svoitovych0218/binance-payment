@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { routes } from 'constants/routes';
+import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getCurrentUser } from '../api/auth/getCurrentUser';
 import { refreshToken } from '../api/auth/refreshToken';
@@ -20,9 +21,9 @@ export function useProvideAuth() {
 
     const navigate = useNavigate();
 
-    const loadUser = async () => {
+    const loadUser = useCallback(async () => {
         const token = localStorage.getItem('idToken');
-
+        setIsLoading(true);
         if (token) {
             const res = await getCurrentUser();
             setUser(res);
@@ -30,17 +31,17 @@ export function useProvideAuth() {
             setUser(null);
         }
         setIsLoading(false);
-    }
+    },[]);
 
     useEffect(() => {
         loadUser();
-    }, []);
+    }, [loadUser]);
 
     const logout = useCallback(() => {
         localStorage.removeItem('idToken');
         localStorage.removeItem('refreshToken');
         setUser(null);
-        navigate('/login');
+        navigate(routes.login);
     }, [setUser]);
 
     const refresh = useCallback(async () => {
@@ -57,8 +58,10 @@ export function useProvideAuth() {
         isLoading,
         user,
         refresh,
-        logout
-    }), [user, refresh, logout, isLoading]);
+        logout,
+        isAuthorized: !!user,
+        loadUser
+    }), [isLoading, user, refresh, logout, loadUser]);
 
     return provider;
 }
@@ -68,4 +71,6 @@ export interface IAuthProvider {
     user: IUser | null;
     refresh: () => Promise<void>;
     logout: () => void;
+    isAuthorized: boolean
+    loadUser: () => void
 }

@@ -19,51 +19,52 @@ import { Registration } from './Pages/Registration/Registration';
 import { PagePreloader } from './Components/PagePreloader/PagePreloader';
 import { EmailConfirmation } from './Pages/EmailConfirmation/EmailConfirmation';
 import { EmailNotActivated } from './Pages/EmailNotActivated/EmailNotActivated';
+import { routes } from 'constants/routes';
 
 export const RouteHandler = () => {
   return (
     <>
       <Navigation />
       <Routes>
-        <Route path="/" element={
-          <Navigate to='/dashboard' />
+        <Route path={routes.baseRoute} element={
+          <Navigate to={routes.dashboard} />
         } />
-        <Route path="/transaction-history" element={
-          <RouteAuthGuard userRoles={[UserRole.Owner, UserRole.Admin]} redirectTo="/login">
+        <Route path={routes.transactionHistory} element={
+          <RouteAuthGuard userRoles={[UserRole.Owner, UserRole.Admin]} redirectTo={routes.login}>
             <TransactionHistory />
           </RouteAuthGuard>
         } />
-        <Route path="/configurations" element={
-          <RouteAuthGuard userRoles={[UserRole.Admin, UserRole.Owner]} redirectTo="/login">
+        <Route path={routes.configurations} element={
+          <RouteAuthGuard userRoles={[UserRole.Admin, UserRole.Owner]} redirectTo={routes.login}>
             <Users />
           </RouteAuthGuard>
         } />
-        <Route path="/dashboard" element={
-          <RouteAuthGuard userRoles={[UserRole.Admin, UserRole.Operator, UserRole.Owner]} redirectTo="/login">
+        <Route path={routes.dashboard} element={
+          <RouteAuthGuard userRoles={[UserRole.Admin, UserRole.Operator, UserRole.Owner]} redirectTo={routes.login}>
             <Dashboard />
           </RouteAuthGuard>
         } />
-        <Route path="/super-admin" element={
-          <RouteAuthGuard userRoles={[UserRole.SuperAdmin]} redirectTo="/login">
+        <Route path={routes.superAdmin} element={
+          <RouteAuthGuard userRoles={[UserRole.SuperAdmin]} redirectTo={routes.login}>
             <SuperAdmin />
           </RouteAuthGuard>
         } />
-        <Route path="/api-keys" element={
-          <RouteAuthGuard userRoles={[UserRole.Owner]} redirectTo="/dashboard">
+        <Route path={routes.apiKeys} element={
+          <RouteAuthGuard userRoles={[UserRole.Owner]} redirectTo={routes.dashboard}>
             <ApiKeys />
           </RouteAuthGuard>
         } />
-        <Route path="/password-recovery" element={
+        <Route path={routes.passwordRecovery} element={
           <PasswordRecoveryRequest />
         } />
-        <Route path="/recovery-password-confirmation*" element={
+        <Route path={routes.recoveryPasswordConfirmation} element={
           <PasswordRecoveryConfirmation />
         }
         />
-        <Route path="/login" element={<Login />} />
-        <Route path="/registration" element={<Registration />} />
-        <Route path="/email-confirmation" element={<EmailConfirmation />} />
-        <Route path='/email-not-confirmed' element={<EmailNotActivated />} />
+        <Route path={routes.login} element={<Login />} />
+        <Route path={routes.registration} element={<Registration />} />
+        <Route path={routes.emailConfirmation} element={<EmailConfirmation />} />
+        <Route path={routes.emailNotConfirmed} element={<EmailNotActivated />} />
       </Routes>
     </>
   )
@@ -84,7 +85,7 @@ export function RouteAuthGuard({ children, redirectTo, userRoles }: { children: 
           return s === auth?.user?.role
         })
           ? children
-          : <Navigate to={'/dashboard'} />
-        : <Navigate to={'/email-not-confirmed'} />
+          : <Navigate to={routes.dashboard} />
+        : children
       : <Navigate to={redirectTo} replace />;
 }
