@@ -86,6 +86,6 @@ export function RouteAuthGuard({ children, redirectTo, userRoles }: { children: 
         })
           ? children
           : <Navigate to={routes.dashboard} />
-        : children
+        : <Navigate to={routes.emailNotConfirmed} />
       : <Navigate to={redirectTo} replace />;
 }
