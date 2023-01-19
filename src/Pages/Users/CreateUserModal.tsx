@@ -38,7 +38,7 @@ export const CreateUserModal = ({ show, handleClose, handleSubmit }: ICreateUser
             </Modal.Header>
             <Modal.Body>
                 <Formik
-                    validateOnChange
+                    validateOnChange={false}
                     initialValues={initialValues}
                     onSubmit={handleSubmit}
                     validationSchema={createUserSchema}
