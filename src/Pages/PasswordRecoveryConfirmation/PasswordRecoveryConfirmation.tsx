@@ -1,3 +1,4 @@
+import { routes } from "constants/routes";
 import { Formik } from "formik";
 import { useCallback, useMemo, useState } from "react";
 import { Button, Col, Container, Form, Row } from "react-bootstrap"
@@ -45,7 +46,7 @@ export const PasswordRecoveryConfirmation = () => {
                 <Col md={4} sm={12}></Col>
                 {requestSent ? <Col md={4} sm={12}>
                     Дякуюємо! Ваш пароль змінено, тепер ви можете увійти в систему використовуючи новий пароль.{' '}
-                    <Link to={'/login'}>Увійти</Link>
+                    <Link to={routes.login}>Увійти</Link>
                 </Col> : <Col md={4} sm={12}>
                     {wrongUrl ? 'Щось пішно не так. Посилання на зміну паролю не дійсне' :
                         <Formik

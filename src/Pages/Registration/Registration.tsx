@@ -6,6 +6,7 @@ import * as Yup from 'yup';
 import { Eye, EyeSlash } from 'react-bootstrap-icons';
 import { registration } from "../../api/registration";
 import { toast } from "react-toastify";
+import { routes } from "constants/routes";
 
 interface ILoginFormProps {
     organizationName: string;
@@ -139,7 +140,7 @@ export const Registration = () => {
                                     <Button disabled={isSubmitting} className="mt-4 w-100" type="submit" variant="primary">
                                         {isSubmitting ? <div className="spinner-grow spinner-grow-sm text-light" role="status" /> : <>Реєстрація</>}
                                     </Button>
-                                    <p>Вже зареєстровані? <a href='/Login'>Вхід</a></p>
+                                    <p>Вже зареєстровані? <a href={routes.login}>Вхід</a></p>
                                 </Form>
                             )}
                         </Formik>

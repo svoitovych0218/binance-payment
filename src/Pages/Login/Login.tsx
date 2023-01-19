@@ -1,7 +1,9 @@
+import { routes } from "constants/routes";
 import { Formik } from "formik";
+import { useAuth } from "hooks/useAuth";
 import { useCallback, useEffect } from "react";
 import { Button, Col, Container, Form, Row } from "react-bootstrap"
-import { redirect, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { ILoginRequest, login } from "../../api/auth/login";
 import { FormField } from "../../Components/Inputs/FormField";
@@ -13,29 +15,32 @@ interface ILoginFormProps {
 }
 
 export const Login = () => {
+    const auth = useAuth();
     const initialValues: ILoginFormProps =
         { organizationName: '', userName: '', password: '' }
+    const isAuthorized = auth?.isAuthorized || false;
+    const loadUser = auth?.loadUser || null;
 
     const navigate = useNavigate();
 
     useEffect(()=>{
-        const token = localStorage.getItem('idToken');
-        if (token){
-            window.location.href ='/dashboard';
+        if (isAuthorized){
+            navigate(routes.dashboard);
         }
-    }, []);
+    }, [navigate, isAuthorized]);
 
     const signIn = useCallback(async (req: ILoginRequest) => {
         try {
             const response = await login(req);
             localStorage.setItem('idToken', response.token);
             localStorage.setItem('refreshToken', response.refreshToken);
-
-            window.location.href ='/dashboard';
+            if(loadUser)
+                await loadUser();
+            navigate(routes.dashboard);
         } catch (e: any) {
             toast(e.response?.data?.message ?? 'Something went wrong', { type: 'error' });
         }
-    }, [navigate]);
+    }, [navigate, loadUser]);
 
     const onSubmitHandler = useCallback(async (values: ILoginFormProps) => {
         await signIn(values);
@@ -67,8 +72,8 @@ export const Login = () => {
                                 <Button className="mt-4 w-100" type="submit" variant="primary">
                                     Log In
                                 </Button>
-                                <a href='/password-recovery'>Забули пароль ?</a>
-                                <a className="f-right" href='/registration'>Реєстрація</a>
+                                <a href={routes.passwordRecovery}>Забули пароль ?</a>
+                                <a className="f-right" href={routes.registration}>Реєстрація</a>
                             </Form>
                         )}
                     </Formik>
