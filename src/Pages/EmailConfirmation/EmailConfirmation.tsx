@@ -1,6 +1,6 @@
 import { routes } from "constants/routes";
-import { useEffect, useMemo, useState } from "react";
-import { Col, Container, Form, Row } from "react-bootstrap"
+import { useEffect, useMemo, useState, useCallback } from "react";
+import { Col, Container, Row } from "react-bootstrap"
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { confirmEmail } from "../../api/confirmEmail";
@@ -24,7 +24,7 @@ export const EmailConfirmation = () => {
 
     const wrongUrl = !queryData.code || !queryData.organization || !queryData.userName;
 
-    const confirmEmailRequest = async (code: string, organization: string, userName: string) => {
+    const confirmEmailRequest = useCallback(async (code: string, organization: string, userName: string) => {
         try {
             await confirmEmail(code, organization, userName);
             toast("Активовано!", { type: 'success' });
@@ -36,13 +36,13 @@ export const EmailConfirmation = () => {
         } catch {
             toast("Помилка. Посилання невалідне", { type: 'error' });
         }
-    }
+    },[navigate])
 
     useEffect(() => {
         if (queryData && !wrongUrl) {
             confirmEmailRequest(queryData.code!, queryData.organization!, queryData.userName!);
         }
-    }, [wrongUrl, queryData])
+    }, [wrongUrl, queryData, confirmEmailRequest])
 
     return (
         <Container>

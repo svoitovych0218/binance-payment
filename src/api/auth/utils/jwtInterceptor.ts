@@ -1,7 +1,5 @@
 import axios from "axios";
 import { config } from "../../../config";
-// import { refreshToken } from "../refreshToken";
-import { redirect } from "react-router-dom";
 
 const api = axios.create({
     baseURL: 'https://x8292499fi.execute-api.us-west-1.amazonaws.com/dev'

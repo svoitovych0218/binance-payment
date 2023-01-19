@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from 'react';
 import { Dropdown } from 'react-bootstrap';
 import Table from 'react-bootstrap/Table';
 import { toast } from 'react-toastify';
-import { ToastContainer } from 'react-toastify/dist/components';
 import { activateUser } from '../../api/activateUser';
 import { getUsers } from '../../api/getUsers';
 import { IUser } from '../../types.ts/user';

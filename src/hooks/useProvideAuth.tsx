@@ -1,5 +1,5 @@
 import { routes } from 'constants/routes';
-import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getCurrentUser } from '../api/auth/getCurrentUser';
 import { refreshToken } from '../api/auth/refreshToken';
@@ -42,7 +42,7 @@ export function useProvideAuth() {
         localStorage.removeItem('refreshToken');
         setUser(null);
         navigate(routes.login);
-    }, [setUser]);
+    }, [navigate]);
 
     const refresh = useCallback(async () => {
         const response = await refreshToken({ refreshToken: localStorage.getItem('refreshToken')! });
