@@ -11,7 +11,7 @@ export const PaymentRates: FC = () => {
     setIsLoadingSubscription(true);
     try {
       const res = await createSubscriptionPayment(tier);
-      console.log(res);
+      window.location.href = res.data.url;
     }
     catch (error) {
       console.log(error);
