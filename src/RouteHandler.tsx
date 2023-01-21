@@ -20,6 +20,8 @@ import { PagePreloader } from './Components/PagePreloader/PagePreloader';
 import { EmailConfirmation } from './Pages/EmailConfirmation/EmailConfirmation';
 import { EmailNotActivated } from './Pages/EmailNotActivated/EmailNotActivated';
 import { routes } from 'constants/routes';
+import { PaymentRates } from 'Pages/PaymentRates';
+import { BillingPage } from 'Pages/Billing';
 
 export const RouteHandler = () => {
   return (
@@ -61,6 +63,12 @@ export const RouteHandler = () => {
           <PasswordRecoveryConfirmation />
         }
         />
+        <Route path={routes.billing} element={
+          <RouteAuthGuard userRoles={[UserRole.Admin, UserRole.Owner]} redirectTo={routes.dashboard}>
+            <BillingPage />
+          </RouteAuthGuard>
+        } />
+        <Route path={routes.subscriptionRates} element={<PaymentRates />} />
         <Route path={routes.login} element={<Login />} />
         <Route path={routes.registration} element={<Registration />} />
         <Route path={routes.emailConfirmation} element={<EmailConfirmation />} />

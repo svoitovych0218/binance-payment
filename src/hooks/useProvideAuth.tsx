@@ -13,6 +13,7 @@ interface IUser {
     email: string;
     active: boolean;
     emailConfirmed?: boolean;
+    subscriptionPaidTill?: string
 }
 
 export function useProvideAuth() {

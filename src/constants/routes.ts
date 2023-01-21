@@ -10,5 +10,7 @@ export const routes = {
   recoveryPasswordConfirmation: '/recovery-password-confirmation*',
   registration: '/registration',
   emailConfirmation: '/email-confirmation',
-  emailNotConfirmed: '/email-not-confirmed'
+  emailNotConfirmed: '/email-not-confirmed',
+  billing: '/billing',
+  subscriptionRates: '/subscription-rates'
 }
