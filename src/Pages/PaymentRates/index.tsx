@@ -4,6 +4,7 @@ import { Col, Row, Container } from "react-bootstrap";
 import { TierSubscripton } from "types.ts/billing";
 import { subscriptionRates } from "constants/subscriptionRates";
 import { createSubscriptionPayment } from "api/createSubscriptionPayment";
+import { toast } from "react-toastify";
 
 export const PaymentRates: FC = () => {
   const [isLoadingSubscription, setIsLoadingSubscription] = useState(false);
@@ -11,10 +12,10 @@ export const PaymentRates: FC = () => {
     setIsLoadingSubscription(true);
     try {
       const res = await createSubscriptionPayment(tier);
-      window.location.href = res.data.url;
+      window.open(res.data.url);
     }
     catch (error) {
-      console.log(error);
+      toast('Щось пішло не так', { type: 'error' })
     }
     finally {
       setIsLoadingSubscription(false);
