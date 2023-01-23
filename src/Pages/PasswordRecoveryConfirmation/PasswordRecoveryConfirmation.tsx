@@ -38,7 +38,7 @@ export const PasswordRecoveryConfirmation = () => {
         } catch (e: any) {
             toast(e.response?.data?.message ?? 'Something went wrong', { type: 'error' });
         }
-    }, []);
+    }, [queryData.code, queryData.organization, queryData.userName]);
 
     return (
         <Container>

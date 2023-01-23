@@ -1,25 +1,27 @@
-import { Button, Dropdown, Row } from 'react-bootstrap';
+import { Dropdown, Row } from 'react-bootstrap';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import { useAuth } from './hooks/useAuth';
 import { UserRole } from './providers/AuthProvider';
+import { routes } from 'constants/routes';
 
 export const Navigation = () => {
     const auth = useAuth();
     console.log(auth?.user);
     return (
-        <Container>
+        <Container fluid>
             <Row>
                 <Navbar style={{ padding: '0 15px 0 15px' }} bg="light" collapseOnSelect expand="lg" variant="light">
                     <Navbar.Brand href="#home">MakePay</Navbar.Brand>
                     <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                     {auth?.user && <Navbar.Collapse id='responsive-navbar-nav'>
                         <Nav className="mr-auto">
-                            <Nav.Link href="/dashboard">Робоча зона</Nav.Link>
-                            <Nav.Link href="/configurations">Конфігурація користувачів</Nav.Link>
-                            <Nav.Link href="/transaction-history">Історія транзакцій</Nav.Link>
-                            {auth?.user.role === UserRole.Owner && <Nav.Link href='api-keys'>API Keys</Nav.Link>}
+                            <Nav.Link href={routes.dashboard}>Робоча зона</Nav.Link>
+                            <Nav.Link href={routes.configurations}>Конфігурація користувачів</Nav.Link>
+                            <Nav.Link href={routes.transactionHistory}>Історія транзакцій</Nav.Link>
+                            {auth?.user.role === UserRole.Owner && <Nav.Link href={routes.apiKeys}>API Keys</Nav.Link>}
+                            <Nav.Link href={routes.billing}>Білінг</Nav.Link>
                         </Nav>
                     </Navbar.Collapse>
                     }

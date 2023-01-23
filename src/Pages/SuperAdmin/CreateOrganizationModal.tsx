@@ -19,9 +19,6 @@ const initialValues: CreateOrganizationRequest = {
 }
 
 export const CreateOrganizationModal = ({ show, handleSubmit }: ICreatePaymentModalProps) => {
-    const handleFormSubmit = (event: any) => {
-        console.log(event);
-    }
 
     const onSubmit = (values: any) => {
         console.log(values);

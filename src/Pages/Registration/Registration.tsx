@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 import { Formik } from "formik";
 import { useCallback, useState } from "react";
 import { Button, Col, Container, Form, InputGroup, Row } from "react-bootstrap"
