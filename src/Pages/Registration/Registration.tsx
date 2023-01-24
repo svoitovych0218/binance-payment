@@ -8,6 +8,7 @@ import { Eye, EyeSlash } from 'react-bootstrap-icons';
 import { registration } from "../../api/registration";
 import { toast } from "react-toastify";
 import { routes } from "constants/routes";
+import { ErrorLabel } from "Components/ErrorLabel";
 
 interface ILoginFormProps {
     organizationName: string;
@@ -18,6 +19,8 @@ interface ILoginFormProps {
     phoneNumber: string;
     firstName: string;
     lastName: string;
+    agreeWithPublickOffer: boolean
+    agreeWithPrivacyPolicy: boolean
 }
 
 const SignupSchema = Yup.object().shape({
@@ -47,7 +50,9 @@ const SignupSchema = Yup.object().shape({
         .matches(/^(?=.*[A-za-z@$!%*?&])(?=.*\d)[A-za-z\d@$!%*?&]{8,}$/, "Пароль має бути не менше 8 символів довжиною, а також складатись з хоча б однієї букви та однієї цифри")
         .required("Це поле обов'язкове"),
     repeatPassword: Yup.string()
-        .oneOf([Yup.ref('password'), null], 'Паролі мають співпадати')
+        .oneOf([Yup.ref('password'), null], 'Паролі мають співпадати'),
+    agreeWithPublickOffer: Yup.bool().oneOf([true], 'Ви повинні підтвердити, що ознайомились'),
+    agreeWithPrivacyPolicy: Yup.bool().oneOf([true], 'Ви повинні підтвердити, що ознайомились')
 });
 
 export const Registration = () => {
@@ -57,7 +62,7 @@ export const Registration = () => {
     const [email, setEmail] = useState<string>('');
 
     const initialValues: ILoginFormProps =
-        { organizationName: '', userName: '', password: '', email: '', phoneNumber: '+', repeatPassword: '', firstName: '', lastName: '' }
+        { organizationName: '', userName: '', password: '', email: '', phoneNumber: '+', repeatPassword: '', firstName: '', lastName: '', agreeWithPrivacyPolicy: false, agreeWithPublickOffer: false }
 
     const onSubmitHandler = useCallback(async (values: ILoginFormProps) => {
         try {
@@ -137,7 +142,34 @@ export const Registration = () => {
                                         </InputGroup.Text>}
                                         inputGroupPosition='after'
                                     />
-
+                                    <Form.Group className="mt-4" controlId="agreeWithPublickOffer">
+                                        <Form.Check
+                                            onChange={handleChange}
+                                            checked={values.agreeWithPublickOffer}
+                                            type="checkbox"
+                                            label={<>
+                                                Я погоджуюсь з публічною <a href="https://makepay.com.ua/oferta" target="_blank" rel="noreferrer">офертою</a>
+                                            </>}
+                                        />
+                                        {errors.agreeWithPublickOffer && touched.agreeWithPublickOffer && <ErrorLabel>
+                                            {errors.agreeWithPublickOffer}
+                                        </ErrorLabel>
+                                        }
+                                    </Form.Group>
+                                    <Form.Group className="mt-4" controlId="agreeWithPrivacyPolicy">
+                                        <Form.Check
+                                            onChange={handleChange}
+                                            checked={values.agreeWithPrivacyPolicy}
+                                            type="checkbox"
+                                            label={<>
+                                                Я погоджуюсь з <a href="https://makepay.com.ua/politika" target="_blank" rel="noreferrer">політикою конфіденційності</a>
+                                            </>}
+                                        />
+                                        {errors.agreeWithPrivacyPolicy && touched.agreeWithPrivacyPolicy && <ErrorLabel>
+                                            {errors.agreeWithPublickOffer}
+                                        </ErrorLabel>
+                                        }
+                                    </Form.Group>
                                     <Button disabled={isSubmitting} className="mt-4 w-100" type="submit" variant="primary">
                                         {isSubmitting ? <div className="spinner-grow spinner-grow-sm text-light" role="status" /> : <>Реєстрація</>}
                                     </Button>
