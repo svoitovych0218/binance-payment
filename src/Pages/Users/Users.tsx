@@ -15,7 +15,7 @@ export const Users = () => {
     return (
         <Container>
             <div style={{ display: 'flex', justifyContent: 'space-between', margin: '20px 20px' }}>
-                <h2>Users</h2>
+                <h2>Користувачі</h2>
                 <Button variant="outline-primary" onClick={() => setShowCreatePaymentModal(true)}>Створити користувача</Button>
             </div>
             <UsersTable />
