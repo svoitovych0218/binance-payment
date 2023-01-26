@@ -100,6 +100,7 @@ export const PaymentsTable = () => {
                 <thead>
                     <tr>
                         <th>#</th>
+                        <th>Чек #</th>
                         <th>Сума</th>
                         <th>Сума</th>
                         <th>Створив</th>
@@ -113,6 +114,7 @@ export const PaymentsTable = () => {
                     {payments.map(s => (
                         <tr key={s.SK}>
                             <td>{s.SK}</td>
+                            <td>{s.receipNumber}</td>
                             <td>{s.amountUAH} UAH</td>
                             <td>{s.amount.toFixed(2)} {s.currency}</td>
                             <td>{s.createdByUserName}</td>
