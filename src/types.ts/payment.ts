@@ -9,6 +9,7 @@ export interface IPayment {
     amount: number;
     currency: string;
     binanceResponse: any;
+    receipNumber?: string;
     paidAt?: string;
     cancelledBy?: string;
   }
