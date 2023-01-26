@@ -56,9 +56,7 @@ export const BillingPage: FC = () => {
           </Card>
         </Col>
         <Col md={12} lg={6}>
-          <Card>
-            <Card.Title style={titleStyle}>Баланс транзакцій</Card.Title>
-          </Card>
+          
         </Col>
       </Row>
       <Row>

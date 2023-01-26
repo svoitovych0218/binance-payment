@@ -57,7 +57,7 @@ export const CreateUserModal = ({ show, handleClose, handleSubmit }: ICreateUser
                     }) => {
                         return (
                             <Form onSubmit={handleSubmit}>
-                                <FormField name="userName" label='Username' type='text' />
+                                <FormField name="userName" label='Логін' type='text' />
                                 <FormField name="firstName" label="Ім'я" type='text' />
                                 <FormField name="lastName" label='Прізвище' type='text' />
                                 <FormField name="email" label='Email' type='email' />

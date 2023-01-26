@@ -66,7 +66,7 @@ export const PaymentsTable = () => {
         <>
             <div style={{ display: 'flex', margin: '20px 0' }}>
                 <Form.Group style={{ display: 'flex' }}>
-                    <Form.Label>From</Form.Label>
+                    <Form.Label>Від</Form.Label>
                     <Form.Control
                         style={{ width: '300px' }}
                         className='ml-2'
@@ -77,7 +77,7 @@ export const PaymentsTable = () => {
                         onChange={(e) => setFilters(prev => ({ ...prev, from: e.target.value }))} />
                 </Form.Group>
                 <Form.Group className='ml-4' style={{ display: 'flex' }}>
-                    <Form.Label>To</Form.Label>
+                    <Form.Label>До</Form.Label>
                     <Form.Control
                         className='ml-2'
                         style={{ width: '300px' }}
@@ -87,14 +87,14 @@ export const PaymentsTable = () => {
                         onChange={(e) => setFilters(prev => ({ ...prev, to: e.target.value }))} />
                 </Form.Group>
                 <Form.Group className='ml-4'>
-                    <Form.Check label="Paid only" checked={filters.paidOnly} onChange={() => setFilters(prev => ({ ...prev, paidOnly: !prev.paidOnly }))} />
+                    <Form.Check label="Оплачені" checked={filters.paidOnly} onChange={() => setFilters(prev => ({ ...prev, paidOnly: !prev.paidOnly }))} />
                 </Form.Group>
                 <FormGroup className='ml-4'>
                     <Button variant='outline-primary' onClick={() => getExcellReportCallback()}>Excel Звіт</Button>
                 </FormGroup>
             </div>
             <div>
-                {completedTotal && <h6>Completed payments total amount: {completedTotal.toFixed(2)}</h6>}
+                {completedTotal !== undefined && <h6>Загальна сума здійснених платежів: {completedTotal.toFixed(2)}</h6>}
             </div>
             <Table size='sm' striped bordered hover >
                 <thead>

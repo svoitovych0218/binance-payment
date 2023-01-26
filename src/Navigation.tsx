@@ -1,10 +1,11 @@
-import { Dropdown, Row } from 'react-bootstrap';
+import { Dropdown, Figure, Row } from 'react-bootstrap';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import { useAuth } from './hooks/useAuth';
 import { UserRole } from './providers/AuthProvider';
 import { routes } from 'constants/routes';
+import Logo from 'assets/images/logo_black.png';
 
 export const Navigation = () => {
     const auth = useAuth();
@@ -13,7 +14,9 @@ export const Navigation = () => {
         <Container fluid>
             <Row>
                 <Navbar style={{ padding: '0 15px 0 15px' }} bg="light" collapseOnSelect expand="lg" variant="light">
-                    <Navbar.Brand href="#home">MakePay</Navbar.Brand>
+                    <Navbar.Brand href="#home">
+                            <Figure.Image width={50} src={Logo}/>
+                    </Navbar.Brand>
                     <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                     {auth?.user && <Navbar.Collapse id='responsive-navbar-nav'>
                         <Nav className="mr-auto">

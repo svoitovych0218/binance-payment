@@ -16,10 +16,10 @@ export const PaymentrRateCard: FC<IProps> = ({ isBestPrice, price, duration, onC
       </Badge>
       }
       <Card.Title style={titleStyle}>
-        {price}₴
+        {duration}
       </Card.Title>
       <Card.Subtitle style={subtitleStyle}>
-        {duration}
+        {price}грн/місяць
       </Card.Subtitle>
       <Card.Footer style={footerStyle}>
         <Button disabled={isLoading} onClick={onClick}>Вибрати</Button>
