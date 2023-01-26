@@ -28,7 +28,7 @@ const AmmountFormField = ({ label, type, name, ...props }: FormFieldProps) => {
         const res = await axios.get('https://api.binance.com/api/v3/trades?symbol=USDTUAH&limit=10');
         const data = res.data[0];
         if (debouncedAmount) {
-            setFieldValue('amountBusd', debouncedAmount / (+data.price));
+            setFieldValue('amountBusd', (debouncedAmount / (+data.price)).toFixed(2));
         }
     }, [debouncedAmount, setFieldValue])
 
