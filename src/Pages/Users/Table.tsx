@@ -36,12 +36,12 @@ export const UsersTable = () => {
             <Table size='sm' striped bordered hover >
                 <thead>
                     <tr>
-                        <th>UserName</th>
-                        <th>Full Name</th>
+                        <th>Логін</th>
+                        <th>Ім'я</th>
                         <th>Email</th>
-                        <th>Role</th>
-                        <th>IsActive</th>
-                        <th>Actions</th>
+                        <th>Роль</th>
+                        <th>Статус</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -51,14 +51,14 @@ export const UsersTable = () => {
                             <td>{s.name}</td>
                             <td>{s.email}</td>
                             <td>{s.role}</td>
-                            <td>{s.active ? 'Yes' : 'No'}</td>
+                            <td>{s.active ? 'Автивний' : 'Неактивний'}</td>
                             <td><Dropdown>
                                 <Dropdown.Toggle variant="outline-success" id="dropdown-basic">
-                                    Actions
+                                    Дії
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu>
-                                    <Dropdown.Item onClick={() => activateUserCallback(s.SK, false)}>Deactivate</Dropdown.Item>
-                                    <Dropdown.Item onClick={() => activateUserCallback(s.SK, true)}>Activate</Dropdown.Item>
+                                    <Dropdown.Item onClick={() => activateUserCallback(s.SK, false)}>Деактивувати</Dropdown.Item>
+                                    <Dropdown.Item onClick={() => activateUserCallback(s.SK, true)}>Активувати</Dropdown.Item>
                                 </Dropdown.Menu>
                             </Dropdown></td>
                         </tr>
