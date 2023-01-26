@@ -1,8 +1,9 @@
+import { LoadingButton } from "Components/LoadingButton";
 import { routes } from "constants/routes";
 import { Formik } from "formik";
 import { useAuth } from "hooks/useAuth";
 import { useCallback, useEffect } from "react";
-import { Button, Col, Container, Form, Row } from "react-bootstrap"
+import { Col, Container, Form, Row } from "react-bootstrap"
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { ILoginRequest, login } from "../../api/auth/login";
@@ -69,9 +70,9 @@ export const Login = () => {
                                 <FormField name='organizationName' label='Організація' type='text' />
                                 <FormField name='userName' label='Логін' type='text' />
                                 <FormField name='password' label='Пароль' type='password' />
-                                <Button className="mt-4 w-100" type="submit" variant="primary">
+                                <LoadingButton isLoading={isSubmitting} className="mt-4 w-100" type="submit" variant="primary">
                                     Log In
-                                </Button>
+                                </LoadingButton>
                                 <a href={routes.passwordRecovery}>Забули пароль ?</a>
                                 <a className="f-right" href={routes.registration}>Реєстрація</a>
                             </Form>
