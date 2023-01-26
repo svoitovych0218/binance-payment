@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { config } from 'config';
 
 export interface ILoginRequest {
     organizationName: string;
@@ -12,7 +13,7 @@ export interface ILoginResponse {
 }
 
 export const login = async (request: ILoginRequest): Promise<ILoginResponse> => {
-    const res = await axios.post('https://x8292499fi.execute-api.us-west-1.amazonaws.com/dev/login', request);
+    const res = await axios.post(`${config.baseUrl}/login`, request);
 
     return res.data.data as ILoginResponse;
 }
