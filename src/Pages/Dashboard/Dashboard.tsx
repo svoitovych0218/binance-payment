@@ -5,12 +5,17 @@ import { useCallback, useEffect, useState } from 'react';
 import { createSinglePayment } from '../../api/createSinglePayment';
 import { getPayments } from '../../api/getPayments';
 import { PaymentCard } from './PaymentCard';
-import { Col, Row } from 'react-bootstrap';
+import { Col, Row, Alert } from 'react-bootstrap';
 import { IPayment } from '../../types.ts/payment';
 import { cancelPayment } from '../../api/cancelPayment';
 import { toast } from 'react-toastify';
+import { useAuth } from 'hooks/useAuth';
+import { Link } from 'react-router-dom';
+import { routes } from 'constants/routes';
 
 export const Dashboard = () => {
+    const auth = useAuth();
+    const user = auth?.user;
     const [showCreatePaymentModal, setShowCreatePaymentModal] = useState<boolean>(false);
 
     const [payments, setPayments] = useState<IPayment[]>([]);
@@ -48,10 +53,18 @@ export const Dashboard = () => {
             const res = await getPayments();
             setPayments(res.payments);
             toast('Successfully cancelled', { type: 'success' });
-        } catch (e:any) {
+        } catch (e: any) {
             toast(e.response?.data?.message ?? 'Something went wrong', { type: 'error' });
         }
     }, [])
+
+    if (user && !user.apiKeysInitialized) {
+        return (
+            <Alert className="alert alert-warning" role="alert">
+                Додайте <Link to={routes.apiKeys}>API ключі</Link>, для створення платежів
+            </Alert>
+        )
+    }
 
     return (
         <Container>

@@ -8,4 +8,5 @@ export interface IBillingHistoryItem {
   amount: number,
   SK: string,
   type: TierSubscripton
+  paymentUrl: string
 }
