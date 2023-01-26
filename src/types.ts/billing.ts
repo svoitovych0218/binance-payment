@@ -9,3 +9,11 @@ export interface ISubscriptionRate {
   duration: string
   isBestPrice: boolean
 }
+
+export enum BillingStatus {
+  CREATED = "CREATED",
+  PENDING = "PENDING",
+  PAID = "PAID",
+  DECLINED = "DECLINED",
+  REFUNDED = "REFUNDED"
+}

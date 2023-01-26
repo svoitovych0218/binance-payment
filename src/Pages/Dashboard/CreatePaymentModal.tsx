@@ -28,7 +28,7 @@ const AmmountFormField = ({ label, type, name, ...props }: FormFieldProps) => {
         const res = await axios.get('https://api.binance.com/api/v3/trades?symbol=USDTUAH&limit=10');
         const data = res.data[0];
         if (debouncedAmount) {
-            setFieldValue('amountBusd', debouncedAmount / (+data.price));
+            setFieldValue('amountBusd', +(debouncedAmount / (+data.price)).toFixed(2));
         }
     }, [debouncedAmount, setFieldValue])
 
@@ -83,7 +83,7 @@ export const CreatePaymentModal = ({ show, onClose, handleSubmit }: ICreatePayme
                             <Form onSubmit={handleSubmit}>
                                 <FormField name="receipeNumber" label='Номер чеку' type='text' />
                                 <AmmountFormField name="amountUAH" label='Сума в UAH' type='number' />
-                                <FormField disabled name="amountBusd" label='Сума в BUSD' type='number' />
+                                <FormField disabled name="amountBusd" label='Сума в USDT' type='number' />
                                 <Button variant="primary" type='submit'>
                                     Створити
                                 </Button>

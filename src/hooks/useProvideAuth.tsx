@@ -14,6 +14,7 @@ interface IUser {
     active: boolean;
     emailConfirmed?: boolean;
     subscriptionPaidTill?: string
+    apiKeysInitialized: boolean
 }
 
 export function useProvideAuth() {
