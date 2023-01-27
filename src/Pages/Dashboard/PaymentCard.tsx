@@ -6,8 +6,10 @@ export interface IPaymentTableItem {
     SK: string;
     amount: number;
     status: string;
+    currency: string;
     createdByUserName: string;
     createdAt: string;
+    receipNumber?: string;
     binanceResponse: any;
 }
 
@@ -32,8 +34,9 @@ export const PaymentCard = ({ item, cancelPayment }: { item: IPaymentTableItem, 
             </Card.Body>
             <Card.Img variant="top" src={item.binanceResponse.data.qrcodeLink} />
             <ListGroup className="list-group-flush">
-                <ListGroup.Item>{`#${item.SK}`}</ListGroup.Item>
-                <ListGroup.Item>Ціна: {item.amount.toFixed(2)} BUSD</ListGroup.Item>
+            <ListGroup.Item>{`#${item.SK}`}</ListGroup.Item>
+            <ListGroup.Item>{`Чек #${item.receipNumber}`}</ListGroup.Item>
+                <ListGroup.Item>Ціна: {item.amount.toFixed(2)} {item.currency}</ListGroup.Item>
                 <ListGroup.Item>Створив: {item.createdByUserName}</ListGroup.Item>
                 <ListGroup.Item style={{ color: getColorFromStatus(item.status) }}>Статус: {getLocalizedStatus(item.status)}</ListGroup.Item>
                 <ListGroup.Item>Час: {new Date(item.createdAt).toLocaleTimeString()}</ListGroup.Item>
