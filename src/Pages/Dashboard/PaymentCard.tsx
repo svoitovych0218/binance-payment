@@ -1,4 +1,5 @@
 import { Card, Dropdown, ListGroup } from "react-bootstrap"
+import { getFormattedDateInLocalTimeZone } from "utils/date";
 import { getLocalizedStatus } from "../../utils/statuses";
 
 export interface IPaymentTableItem {
@@ -39,11 +40,11 @@ export const PaymentCard = ({ item, cancelPayment }: { item: IPaymentTableItem, 
                 <ListGroup.Item>Ціна: {item.amount.toFixed(2)} {item.currency}</ListGroup.Item>
                 <ListGroup.Item>Створив: {item.createdByUserName}</ListGroup.Item>
                 <ListGroup.Item style={{ color: getColorFromStatus(item.status) }}>Статус: {getLocalizedStatus(item.status)}</ListGroup.Item>
-                <ListGroup.Item>Час: {new Date(item.createdAt).toLocaleTimeString()}</ListGroup.Item>
+                <ListGroup.Item>Дата: {getFormattedDateInLocalTimeZone(item.createdAt)}</ListGroup.Item>
                 <ListGroup.Item>
                     <Dropdown>
                         <Dropdown.Toggle variant="primary" id="dropdown-basic">
-                            Actions
+                            Дії
                         </Dropdown.Toggle>
 
                         <Dropdown.Menu>

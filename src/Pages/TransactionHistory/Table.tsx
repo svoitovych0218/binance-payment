@@ -1,22 +1,11 @@
-import { useCallback, useEffect, useState } from 'react';
-import { Button, Form, FormGroup } from 'react-bootstrap';
+import { Button, Form, FormGroup, Spinner } from 'react-bootstrap';
 import Table from 'react-bootstrap/Table';
-import { toast } from 'react-toastify';
-import { getExcelReport } from '../../api/getExcelReport';
-import { getPayments } from '../../api/getPayments';
-import { IPayment } from '../../types.ts/payment';
 import { getLocalizedStatus } from '../../utils/statuses';
 import { getFormattedDateInLocalTimeZone } from 'utils/date';
-
-interface IFilters {
-    from: string;
-    to: string;
-    paidOnly: boolean;
-}
-
-const formatDate = (date: Date) => {
-    return date.toISOString().split('T')[0];
-}
+import { useTransactionHistory } from './useTransactionHistory/useTransactionHistory';
+import { TransactionHistoryFiltersActionTypes } from 'types.ts/payment';
+import { useIntersection } from 'react-use';
+import { useEffect, useRef } from 'react';
 
 const getColorFromStatus = (status: string) => {
     switch (status) {
@@ -32,35 +21,25 @@ const getColorFromStatus = (status: string) => {
 }
 
 export const PaymentsTable = () => {
-    const date = new Date();
-    const firstMonthDate = formatDate(new Date(date.getFullYear(), date.getMonth(), 1));
-    const now = formatDate(date);
-
-    const [filters, setFilters] = useState<IFilters>({
-        from: firstMonthDate,
-        to: now,
-        paidOnly: false
+    const refDiv = useRef<HTMLDivElement>(null);
+    const intersection = useIntersection(refDiv, {
+        root: null,
+        rootMargin: '0px',
+        threshold: 1
     });
-
-    const [payments, setPayments] = useState<IPayment[]>([]);
-    const [completedTotal, setCompletedTotal] = useState<number | undefined>();
+    const {
+        completedTotal,
+        payments,
+        filters,
+        dispatch,
+        getExcellReportCallback,
+        isLoadingPayments,
+        fetchMorePayments
+    } = useTransactionHistory();
 
     useEffect(() => {
-        (async () => {
-            const res = await getPayments(new Date(filters.from).toISOString(), new Date(filters.to).toISOString(), filters.paidOnly);
-            setPayments(res.payments);
-            setCompletedTotal(res.completedPaymentsSum);
-        })()
-    }, [filters]);
-
-    const getExcellReportCallback = useCallback(async () => {
-        try {
-            const url = await getExcelReport(new Date(filters.from).toISOString(), new Date(filters.to).toISOString(), filters.paidOnly);
-            window.open(url);
-        } catch (e: any) {
-            toast(e.response?.data?.message ?? 'Something went wrong', { type: 'error' });
-        }
-    }, [filters]);
+        intersection?.isIntersecting && !isLoadingPayments && fetchMorePayments();
+    },[intersection?.isIntersecting, fetchMorePayments, isLoadingPayments]);
 
     return (
         <>
@@ -72,9 +51,14 @@ export const PaymentsTable = () => {
                         className='ml-2'
                         size='sm'
                         type="date"
-                        value={filters.from}
+                        value={getFormattedDateInLocalTimeZone(filters.from, 'yyyy-MM-dd')}
                         name='from'
-                        onChange={(e) => setFilters(prev => ({ ...prev, from: e.target.value }))} />
+                        onChange={(e) => dispatch({
+                            type: TransactionHistoryFiltersActionTypes.SET_FROM_DATE,
+                            payload: {
+                                from: e.target.value
+                            }
+                        })} />
                 </Form.Group>
                 <Form.Group className='ml-4' style={{ display: 'flex' }}>
                     <Form.Label>До</Form.Label>
@@ -82,12 +66,22 @@ export const PaymentsTable = () => {
                         className='ml-2'
                         style={{ width: '300px' }}
                         size='sm' type="date"
-                        value={filters.to}
+                        value={getFormattedDateInLocalTimeZone(filters.to, 'yyyy-MM-dd')}
                         name='to'
-                        onChange={(e) => setFilters(prev => ({ ...prev, to: e.target.value }))} />
+                        onChange={(e) => dispatch({
+                            type: TransactionHistoryFiltersActionTypes.SET_TO_DATE,
+                            payload: {
+                                to: e.target.value
+                            }
+                        })} />
                 </Form.Group>
                 <Form.Group className='ml-4'>
-                    <Form.Check label="Оплачені" checked={filters.paidOnly} onChange={() => setFilters(prev => ({ ...prev, paidOnly: !prev.paidOnly }))} />
+                    <Form.Check label="Оплачені" checked={filters.paidOnly} onChange={(e) => dispatch({
+                        type: TransactionHistoryFiltersActionTypes.SET_PAID_ONLY,
+                        payload: {
+                            paidOnly: e.target.checked
+                        }
+                    })} />
                 </Form.Group>
                 <FormGroup className='ml-4'>
                     <Button variant='outline-primary' onClick={() => getExcellReportCallback()}>Excel Звіт</Button>
@@ -126,6 +120,11 @@ export const PaymentsTable = () => {
                     ))}
                 </tbody>
             </Table>
+            {isLoadingPayments && <div style={{ display: 'flex', justifyContent: 'center', marginTop: '50px', marginBottom: '50px' }}>
+                <Spinner animation="border" variant="primary"/>
+            </div>
+            }
+            <div ref={refDiv}></div>
         </>
     );
 }
