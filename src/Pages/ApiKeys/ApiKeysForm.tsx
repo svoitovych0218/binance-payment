@@ -1,7 +1,7 @@
 import { Form, Formik, FormikProps } from "formik"
 import { forwardRef } from "react";
 import { Button } from "react-bootstrap"
-import { FormField } from "../../Components/Inputs/FormField"
+import { FormEyeInput } from "Components/Inputs/FormEyeInput";
 
 export interface FormValues {
     clientId: string;
@@ -33,8 +33,8 @@ export const ApiKeysForm = forwardRef<FormikProps<FormValues>, FormProps>(({ ini
         }) => {
             return (
                 <Form onSubmit={handleSubmit}>
-                    <FormField required className='mb-2' name="clientId" label='Client Id' type='password' />
-                    <FormField required name="secret" label='Secret' type='password' />
+                    <FormEyeInput required className='mb-2' name="clientId" label='Client Id' type='password' />
+                    <FormEyeInput required name="secret" label='Secret' type='password' />
                     <Button disabled={isSubmitting} onClick={onConfirm} className="f-right mt-4" variant="primary" type='button'>
                         Зберегти
                     </Button>
