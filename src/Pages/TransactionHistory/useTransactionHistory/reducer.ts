@@ -32,6 +32,12 @@ export const reducer: Reducer<IFiltersState, TransactionHistoryFiltersAction> = 
         cursor: action.payload
       }
     }
+    case TransactionHistoryFiltersActionTypes.SET_SEARCH: {
+      return {
+        ...state,
+        search: action.payload
+      }
+    }
     default: {
       return state;
     }

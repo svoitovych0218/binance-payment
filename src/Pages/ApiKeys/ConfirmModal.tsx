@@ -14,7 +14,7 @@ export const ConfirmModal: FC<IProps> = ({ show, onHide, onSubmit, isLoading }) 
       <Modal.Body>Ви справді бажаєте зберегти зміни?</Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={onHide}>
-          Відминити
+          Відмінити
         </Button>
         <Button variant="primary" onClick={onSubmit}>
           Підтвердити

@@ -1,4 +1,4 @@
-import { Dropdown, Figure, Row } from 'react-bootstrap';
+import { Dropdown, Figure, Row, NavLinkProps } from 'react-bootstrap';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
@@ -6,6 +6,21 @@ import { useAuth } from './hooks/useAuth';
 import { UserRole } from './providers/AuthProvider';
 import { routes } from 'constants/routes';
 import Logo from 'assets/images/logo_black.png';
+import { CardList, CashStack, HouseDoorFill, KeyFill, PersonLinesFill } from 'react-bootstrap-icons';
+import { CSSProperties, FC } from 'react';
+
+const navLinkStyle: CSSProperties = {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: 10
+}
+
+const WrapperNavLink: FC<NavLinkProps> = ({ children, ...rest }) => <Nav.Link
+    style={navLinkStyle}
+    {...rest}
+>
+    {children}
+</Nav.Link>
 
 export const Navigation = () => {
     const auth = useAuth();
@@ -15,16 +30,31 @@ export const Navigation = () => {
             <Row>
                 <Navbar style={{ padding: '0 15px 0 15px' }} bg="light" collapseOnSelect expand="lg" variant="light">
                     <Navbar.Brand href="#home">
-                            <Figure.Image width={50} src={Logo}/>
+                        <Figure.Image width={50} src={Logo} />
                     </Navbar.Brand>
                     <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                     {auth?.user && <Navbar.Collapse id='responsive-navbar-nav'>
                         <Nav className="mr-auto">
-                            <Nav.Link href={routes.dashboard}>Робоча зона</Nav.Link>
-                            <Nav.Link href={routes.configurations}>Конфігурація користувачів</Nav.Link>
-                            <Nav.Link href={routes.transactionHistory}>Історія транзакцій</Nav.Link>
-                            {auth?.user.role === UserRole.Owner && <Nav.Link href={routes.apiKeys}>API Keys</Nav.Link>}
-                            <Nav.Link href={routes.billing}>Білінг</Nav.Link>
+                            <WrapperNavLink href={routes.dashboard}>
+                                <HouseDoorFill />
+                                Головна
+                            </WrapperNavLink>
+                            <WrapperNavLink href={routes.configurations}>
+                                <PersonLinesFill />
+                                Користувачі
+                            </WrapperNavLink>
+                            <WrapperNavLink href={routes.transactionHistory}>
+                                <CardList />
+                                Історія транзакцій
+                            </WrapperNavLink>
+                            {auth?.user.role === UserRole.Owner && <WrapperNavLink href={routes.apiKeys}>
+                                <KeyFill />
+                                API ключі
+                            </WrapperNavLink>}
+                            <WrapperNavLink href={routes.billing}>
+                                <CashStack />
+                                Білінг
+                            </WrapperNavLink>
                         </Nav>
                     </Navbar.Collapse>
                     }

@@ -1,4 +1,5 @@
 import { Card, Dropdown, ListGroup } from "react-bootstrap"
+import { PaymentStatus } from "types.ts/payment";
 import { getFormattedDateInLocalTimeZone } from "utils/date";
 import { getLocalizedStatus } from "../../utils/statuses";
 
@@ -6,7 +7,7 @@ export interface IPaymentTableItem {
     _id: string;
     SK: string;
     amount: number;
-    status: string;
+    status: PaymentStatus;
     currency: string;
     createdByUserName: string;
     createdAt: string;
@@ -14,7 +15,7 @@ export interface IPaymentTableItem {
     binanceResponse: any;
 }
 
-const getColorFromStatus = (status: string) => {
+const getColorFromStatus = (status: PaymentStatus) => {
     switch (status) {
         case 'COMPLETED':
             return 'green';
@@ -22,6 +23,8 @@ const getColorFromStatus = (status: string) => {
             return 'blue';
         case 'CANCELLED':
             return 'RED';
+        case 'REFUNDED':
+            return '#ca8a14'
         default:
             return 'gray';
     }

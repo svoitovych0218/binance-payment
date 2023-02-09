@@ -2,7 +2,7 @@ import { config } from "../config"
 import { ILastEvaluatedKey, IPayment } from "../types.ts/payment";
 import api from "./auth/utils/jwtInterceptor";
 
-export const getPayments = async (from?: string, to?: string, paidOnly?: boolean, limit?: number, cursor?: ILastEvaluatedKey) => {
+export const getPayments = async (from?: string, to?: string, paidOnly?: boolean, limit?: number, search?: string, cursor?: ILastEvaluatedKey) => {
     const res = await api.get(`${config.baseUrl}/payments`, {
         params: {
             startFrom: from,
@@ -10,7 +10,8 @@ export const getPayments = async (from?: string, to?: string, paidOnly?: boolean
             paidOnly: paidOnly || '',
             limit: limit,
             lastEvaluatedId: cursor?._id,
-            lastEvaluatedSK: cursor?.SK
+            lastEvaluatedSK: cursor?.SK,
+            search: search
         }
     });
 

@@ -1,11 +1,13 @@
-const tranlations: Record<string, string> = {
+import { PaymentStatus } from "types.ts/payment";
+
+const tranlations: Record<PaymentStatus, string> = {
     'PENDING': 'Очікується',
     'COMPLETED': 'Оплачено',
     'CANCELLED': 'Скасовано',
     'REJECTED': 'Відхилено',
-
+    'REFUNDED': 'Повернено'
 }
 
-export const getLocalizedStatus = (status: string) => {
+export const getLocalizedStatus = (status: PaymentStatus) => {
     return tranlations[status];
 }
