@@ -12,6 +12,7 @@ export interface IPayment {
   receipNumber?: string;
   paidAt?: string;
   cancelledBy?: string;
+  refundedBy?: string;
 }
 
 export enum PaymentStatus {
@@ -19,13 +20,15 @@ export enum PaymentStatus {
   COMPLETED = 'COMPLETED',
   REJECTED = 'REJECTED',
   CANCELLED = 'CANCELLED',
+  REFUNDED = 'REFUNDED'
 }
 
 export enum TransactionHistoryFiltersActionTypes {
   SET_FROM_DATE,
   SET_TO_DATE,
   SET_PAID_ONLY,
-  SET_CURSOR
+  SET_CURSOR,
+  SET_SEARCH
 }
 
 export type TransactionHistoryFiltersAction =
@@ -33,6 +36,7 @@ export type TransactionHistoryFiltersAction =
   | { type: TransactionHistoryFiltersActionTypes.SET_TO_DATE, payload: { to: IFiltersState['to'] } }
   | { type: TransactionHistoryFiltersActionTypes.SET_PAID_ONLY, payload: { paidOnly: IFiltersState['paidOnly'] } }
   | { type: TransactionHistoryFiltersActionTypes.SET_CURSOR, payload: IFiltersState['cursor'] }
+  | { type: TransactionHistoryFiltersActionTypes.SET_SEARCH, payload: IFiltersState['search'] }
 
 export interface ILastEvaluatedKey {
   SK: string
@@ -45,4 +49,5 @@ export interface IFiltersState {
   paidOnly: boolean,
   limit: number,
   cursor?: ILastEvaluatedKey
+  search: string
 }

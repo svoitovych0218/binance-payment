@@ -1,15 +1,18 @@
-import { Dispatch, useReducer, useState, useEffect, useCallback } from "react";
+import { Dispatch, useReducer, useState, useEffect, useCallback, useMemo } from "react";
 import {
   TransactionHistoryFiltersAction,
   IPayment,
   IFiltersState,
-  TransactionHistoryFiltersActionTypes
+  TransactionHistoryFiltersActionTypes,
+  PaymentStatus
 } from "types.ts/payment";
 import { getPayments } from "api/getPayments";
 import { getExcelReport } from "api/getExcelReport";
 import { reducer } from "./reducer";
 import { subMonths, endOfDay, startOfDay } from "date-fns";
 import { toast } from "react-toastify";
+import { RefundModal } from "../RefundModal";
+import { refund } from "api/refund";
 
 interface IReturnValue {
   dispatch: Dispatch<TransactionHistoryFiltersAction>
@@ -19,9 +22,14 @@ interface IReturnValue {
   filters: IFiltersState
   isLoadingPayments: boolean
   fetchMorePayments: () => void
+  handleOpenRefundModal: (sk: string) => void
+  refundModalElement: JSX.Element
 }
 
 export const useTransactionHistory = (): IReturnValue => {
+  const [isLoadingRefund, setIsLoadingRefund] = useState(false);
+  const [openRefunModal, setOpenRefunModal] = useState<boolean>(false);
+  const [activeSK, setActiveSK] = useState<string>();
   const [isLoadingPayments, setIsLoadingPayments] = useState(false);
   const date = new Date();
   const prevMonth = startOfDay(subMonths(date, 1)).toISOString();
@@ -32,15 +40,16 @@ export const useTransactionHistory = (): IReturnValue => {
     from: prevMonth,
     to: now,
     paidOnly: false,
-    limit: 10,
-    cursor: undefined
+    limit: 20,
+    cursor: undefined,
+    search: ''
   });
 
   useEffect(() => {
     setIsLoadingPayments(true);
     setPayments([]);
     (async () => {
-      const res = await getPayments(filters.from, filters.to, filters.paidOnly, filters.limit);
+      const res = await getPayments(filters.from, filters.to, filters.paidOnly, filters.limit, filters.search);
       setPayments(res.payments);
       setCompletedTotal(res.completedPaymentsSum);
       dispatch({
@@ -49,14 +58,13 @@ export const useTransactionHistory = (): IReturnValue => {
       });
       setIsLoadingPayments(false);
     })()
-  }, [filters.from, filters.to, filters.paidOnly, filters.limit]);
+  }, [filters.from, filters.to, filters.paidOnly, filters.limit, filters.search]);
 
   const fetchMorePayments = useCallback(async () => {
-    console.log('fetch More payments');
     if (filters.cursor
       && !isLoadingPayments) {
       setIsLoadingPayments(true);
-      const res = await getPayments(filters.from, filters.to, filters.paidOnly, filters.limit, filters.cursor);
+      const res = await getPayments(filters.from, filters.to, filters.paidOnly, filters.limit, filters.search, filters.cursor);
       setPayments(prevPayments => [...prevPayments, ...res.payments]);
       setCompletedTotal(res.completedPaymentsSum);
       dispatch({
@@ -76,6 +84,52 @@ export const useTransactionHistory = (): IReturnValue => {
     }
   }, [filters]);
 
+  const handleRefund = useCallback(async () => {
+    setIsLoadingRefund(true);
+    if (!activeSK)
+      return;
+    try {
+      await refund(activeSK);
+      setPayments(prevPayments => prevPayments.map(p => {
+        if (p.SK === activeSK)
+          return {
+            ...p,
+            status: PaymentStatus.REFUNDED
+          }
+        return p;
+      }))
+      toast('Кошти успішно повернено', { type: "success" })
+    }
+    catch {
+      toast('Щось пішло не так', { type: "error" });
+    }
+    finally {
+      handleCloseRefundModal();
+      setIsLoadingRefund(false);
+    }
+  }, [activeSK]);
+
+  const handleOpenRefundModal = (sk: string) => {
+    setActiveSK(sk);
+    setOpenRefunModal(true);
+  }
+
+  const handleCloseRefundModal = () => {
+    setActiveSK(undefined);
+    setOpenRefunModal(false);
+  }
+
+  const refundModalElement = useMemo(() => {
+    return (
+      <RefundModal
+        isLoading={isLoadingRefund}
+        onHide={handleCloseRefundModal}
+        show={openRefunModal}
+        onSubmit={handleRefund}
+      />
+    )
+  }, [handleRefund, isLoadingRefund, openRefunModal]);
+
   return {
     dispatch,
     payments,
@@ -83,6 +137,8 @@ export const useTransactionHistory = (): IReturnValue => {
     getExcellReportCallback,
     filters,
     isLoadingPayments,
-    fetchMorePayments
+    fetchMorePayments,
+    handleOpenRefundModal,
+    refundModalElement
   }
 }

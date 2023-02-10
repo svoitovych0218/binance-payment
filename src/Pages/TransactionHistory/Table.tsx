@@ -1,13 +1,15 @@
-import { Button, Form, FormGroup, Spinner } from 'react-bootstrap';
+import { Button, Form, FormGroup, Tooltip, OverlayTrigger, Spinner } from 'react-bootstrap';
 import Table from 'react-bootstrap/Table';
 import { getLocalizedStatus } from '../../utils/statuses';
 import { getFormattedDateInLocalTimeZone } from 'utils/date';
 import { useTransactionHistory } from './useTransactionHistory/useTransactionHistory';
 import { TransactionHistoryFiltersActionTypes } from 'types.ts/payment';
-import { useIntersection } from 'react-use';
-import { useEffect, useRef } from 'react';
+import { PaymentStatus } from 'types.ts/payment';
+import { Cash } from 'react-bootstrap-icons';
+import { LoadingButton } from 'Components/LoadingButton';
+import { useRef } from 'react';
 
-const getColorFromStatus = (status: string) => {
+const getColorFromStatus = (status: PaymentStatus) => {
     switch (status) {
         case 'COMPLETED':
             return 'green';
@@ -15,18 +17,15 @@ const getColorFromStatus = (status: string) => {
             return 'blue';
         case 'CANCELLED':
             return 'RED';
+        case 'REFUNDED':
+            return '#ca8a14'
         default:
             return 'gray';
     }
 }
 
 export const PaymentsTable = () => {
-    const refDiv = useRef<HTMLDivElement>(null);
-    const intersection = useIntersection(refDiv, {
-        root: null,
-        rootMargin: '0px',
-        threshold: 1
-    });
+    const timeout = useRef<NodeJS.Timeout>();
     const {
         completedTotal,
         payments,
@@ -34,21 +33,37 @@ export const PaymentsTable = () => {
         dispatch,
         getExcellReportCallback,
         isLoadingPayments,
-        fetchMorePayments
+        fetchMorePayments,
+        handleOpenRefundModal,
+        refundModalElement
     } = useTransactionHistory();
-
-    useEffect(() => {
-        intersection?.isIntersecting && !isLoadingPayments && fetchMorePayments();
-    },[intersection?.isIntersecting, fetchMorePayments, isLoadingPayments]);
 
     return (
         <>
             <div style={{ display: 'flex', margin: '20px 0' }}>
-                <Form.Group style={{ display: 'flex' }}>
-                    <Form.Label>Від</Form.Label>
+                <Form.Group>
+                    <Form.Label>Пошук</Form.Label>
                     <Form.Control
                         style={{ width: '300px' }}
-                        className='ml-2'
+                        size='sm'
+                        placeholder="Введіть номер чеку"
+                        type="text"
+                        name='search'
+                        onChange={(e) => {
+                            clearTimeout(timeout.current);
+                            timeout.current = setTimeout(() => {
+                                dispatch({
+                                    type: TransactionHistoryFiltersActionTypes.SET_SEARCH,
+                                    payload: e.target.value
+                                })
+                            }, 1000);
+
+                        }} />
+                </Form.Group>
+                <Form.Group className='ml-2'>
+                    <Form.Label>Від</Form.Label>
+                    <Form.Control
+                        style={{ width: '150px' }}
                         size='sm'
                         type="date"
                         value={getFormattedDateInLocalTimeZone(filters.from, 'yyyy-MM-dd')}
@@ -60,11 +75,10 @@ export const PaymentsTable = () => {
                             }
                         })} />
                 </Form.Group>
-                <Form.Group className='ml-4' style={{ display: 'flex' }}>
+                <Form.Group className='ml-2'>
                     <Form.Label>До</Form.Label>
                     <Form.Control
-                        className='ml-2'
-                        style={{ width: '300px' }}
+                        style={{ width: '150px' }}
                         size='sm' type="date"
                         value={getFormattedDateInLocalTimeZone(filters.to, 'yyyy-MM-dd')}
                         name='to'
@@ -75,7 +89,7 @@ export const PaymentsTable = () => {
                             }
                         })} />
                 </Form.Group>
-                <Form.Group className='ml-4'>
+                <Form.Group className='ml-2' style={{ display: 'flex', alignItems: 'flex-end' }}>
                     <Form.Check label="Оплачені" checked={filters.paidOnly} onChange={(e) => dispatch({
                         type: TransactionHistoryFiltersActionTypes.SET_PAID_ONLY,
                         payload: {
@@ -83,7 +97,7 @@ export const PaymentsTable = () => {
                         }
                     })} />
                 </Form.Group>
-                <FormGroup className='ml-4'>
+                <FormGroup style={{ marginLeft: 'auto' }}>
                     <Button variant='outline-primary' onClick={() => getExcellReportCallback()}>Excel Звіт</Button>
                 </FormGroup>
             </div>
@@ -99,9 +113,9 @@ export const PaymentsTable = () => {
                         <th>Сума</th>
                         <th>Створив</th>
                         <th>Статус</th>
-                        <th>Відмінив</th>
                         <th>Створено</th>
                         <th>Оплачено</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -112,19 +126,59 @@ export const PaymentsTable = () => {
                             <td>{s.amountUAH} UAH</td>
                             <td>{s.amount.toFixed(2)} {s.currency}</td>
                             <td>{s.createdByUserName}</td>
-                            <td style={{ color: getColorFromStatus(s.status) }}>{getLocalizedStatus(s.status)}</td>
-                            <td>{s.cancelledBy}</td>
+                            <td style={{ color: getColorFromStatus(s.status), textAlign: 'center' }}>
+                                {getLocalizedStatus(s.status)} <br />
+                                {s.status === PaymentStatus.REFUNDED && s.refundedBy && <div style={{ color: 'initial' }}>
+                                    ({s.refundedBy})
+                                </div>}
+                                {s.status === PaymentStatus.CANCELLED && s.cancelledBy && <div style={{ color: 'initial' }}>
+                                    ({s.cancelledBy})
+                                </div>}
+                            </td>
                             <td>{getFormattedDateInLocalTimeZone(s.createdAt)}</td>
                             <td>{s.paidAt && getFormattedDateInLocalTimeZone(s.paidAt)}</td>
+                            <td>{s.status === PaymentStatus.COMPLETED &&
+                                <OverlayTrigger
+                                    placement='top'
+                                    overlay={
+                                        <Tooltip id={`tooltip-${s.SK}`}>
+                                            Повернути кошти
+                                        </Tooltip>
+                                    }
+                                >
+                                    <Cash
+                                        width={20}
+                                        height={20}
+                                        onClick={() => handleOpenRefundModal(s.SK)}
+                                        cursor="pointer"
+                                        color='green'
+                                    />
+                                </OverlayTrigger>
+                            }</td>
                         </tr>
                     ))}
                 </tbody>
             </Table>
-            {isLoadingPayments && <div style={{ display: 'flex', justifyContent: 'center', marginTop: '50px', marginBottom: '50px' }}>
-                <Spinner animation="border" variant="primary"/>
+            {refundModalElement}
+            {isLoadingPayments && <div
+                style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    marginTop: '50px',
+                    marginBottom: '50px'
+                }}>
+                <Spinner animation="border" variant="primary" />
             </div>
             }
-            <div ref={refDiv}></div>
+            {filters.cursor && !isLoadingPayments && <div style={{ textAlign: 'center' }}>
+                <LoadingButton
+                    isLoading={isLoadingPayments}
+                    onClick={fetchMorePayments}
+                >
+                    Завантажити ще
+                </LoadingButton>
+            </div>
+            }
         </>
     );
 }
