@@ -22,6 +22,7 @@ import { EmailNotActivated } from './Pages/EmailNotActivated/EmailNotActivated';
 import { routes } from 'constants/routes';
 import { PaymentRates } from 'Pages/PaymentRates';
 import { BillingPage } from 'Pages/Billing';
+import { PaymentDetails } from 'Pages/PaymentDetails';
 
 export const RouteHandler = () => {
   return (
@@ -73,6 +74,7 @@ export const RouteHandler = () => {
         <Route path={routes.registration} element={<Registration />} />
         <Route path={routes.emailConfirmation} element={<EmailConfirmation />} />
         <Route path={routes.emailNotConfirmed} element={<EmailNotActivated />} />
+        <Route path={routes.paymentDetails} element={<PaymentDetails />} />
       </Routes>
     </>
   )

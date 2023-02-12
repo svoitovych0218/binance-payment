@@ -29,7 +29,7 @@ export const Navigation = () => {
         <Container fluid>
             <Row>
                 <Navbar style={{ padding: '0 15px 0 15px' }} bg="light" collapseOnSelect expand="lg" variant="light">
-                    <Navbar.Brand href="#home">
+                    <Navbar.Brand href={routes.dashboard}>
                         <Figure.Image width={50} src={Logo} />
                     </Navbar.Brand>
                     <Navbar.Toggle aria-controls="responsive-navbar-nav" />
