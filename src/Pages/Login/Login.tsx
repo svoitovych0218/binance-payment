@@ -39,7 +39,7 @@ export const Login = () => {
                 await loadUser();
             navigate(routes.dashboard);
         } catch (e: any) {
-            toast(e.response?.data?.message ?? 'Something went wrong', { type: 'error' });
+            toast(e.response?.data?.message ?? 'Щось пішло не так', { type: 'error' });
         }
     }, [navigate, loadUser]);
 
@@ -71,7 +71,7 @@ export const Login = () => {
                                 <FormField name='userName' label='Логін' type='text' />
                                 <FormField name='password' label='Пароль' type='password' />
                                 <LoadingButton isLoading={isSubmitting} className="mt-4 w-100" type="submit" variant="primary">
-                                    Log In
+                                    Увійти
                                 </LoadingButton>
                                 <a href={routes.passwordRecovery}>Забули пароль ?</a>
                                 <a className="f-right" href={routes.registration}>Реєстрація</a>
