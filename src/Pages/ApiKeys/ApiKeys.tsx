@@ -38,7 +38,7 @@ export const ApiKeys = () => {
     return (
         <Container>
             <Row>
-                <h1>Api Keys</h1>
+                <h1>Api Ключі</h1>
                 {organization ?
                     <ApiKeysForm
                         ref={formikRef}
