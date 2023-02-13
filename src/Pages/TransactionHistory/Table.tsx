@@ -107,7 +107,7 @@ export const PaymentsTable = () => {
             <Table size='sm' striped bordered hover >
                 <thead>
                     <tr>
-                        <th>#</th>
+                        <th>ID</th>
                         <th>Чек #</th>
                         <th>Сума</th>
                         <th>Сума</th>
