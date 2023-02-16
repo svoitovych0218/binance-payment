@@ -53,6 +53,7 @@ export const CreateUserModal = ({ show, handleClose, handleSubmit }: ICreateUser
                         isSubmitting,
                         setFieldValue,
                         isValidating,
+                        isValid,
                         /* and other goodies */
                     }) => {
                         return (
@@ -63,7 +64,7 @@ export const CreateUserModal = ({ show, handleClose, handleSubmit }: ICreateUser
                                 <FormField name="userName" label='Логін' type='text' />
                                 <FormField name="password" label='Пароль' type='password' />
                                 <FormSelect name="userRole" label="Роль" options={[{ value: UserRole.Admin, label: 'Адмін' }, { value: UserRole.Operator, label: 'Оператор' }]} />
-                                <Button disabled={isValidating} style={{margin: '20px auto 0 auto'}} variant="primary" type='submit'>
+                                <Button disabled={isValidating || !isValid} style={{margin: '20px auto 0 auto'}} variant="primary" type='submit'>
                                     Створити
                                 </Button>
                             </Form>

@@ -1,37 +1,14 @@
-import { useCallback, useEffect, useState } from 'react';
 import { Dropdown } from 'react-bootstrap';
 import Table from 'react-bootstrap/Table';
-import { toast } from 'react-toastify';
 import { getLocalizedRole } from 'utils/roles';
-import { activateUser } from '../../api/activateUser';
-import { getUsers } from '../../api/getUsers';
 import { IUser } from '../../types.ts/user';
 
-export const UsersTable = () => {
+interface IUsersTableProps {
+    users: IUser[];
+    activateUserCallback: (userSK: string, active: boolean) => Promise<void>;
+}
 
-    const [users, setUsers] = useState<IUser[]>([]);
-
-    useEffect(() => {
-        (async () => {
-            const res = await getUsers();
-            setUsers(res.users);
-        })();
-    }, []);
-
-    const activateUserCallback = useCallback(async (userSK: string, active: boolean) => {
-        try {
-            const success = await activateUser(userSK, active);
-            if (success) {
-                setUsers(prev => prev.map(s => s.SK === userSK ? ({ ...s, active: active }) : s));
-                toast('Successfully changed');
-            } else {
-                toast('Something went wrong', { type: 'error' });
-            }
-        } catch (ex) {
-            toast('Something went wrong', { type: 'error' });
-        }
-    }, []);
-
+export const UsersTable = ({ users, activateUserCallback }: IUsersTableProps) => {
     return (
         <>
             <Table size='sm' striped bordered hover >
