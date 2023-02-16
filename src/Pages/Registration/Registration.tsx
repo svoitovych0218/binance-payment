@@ -108,17 +108,18 @@ export const Registration = () => {
                                 /* and other goodies */
                             }) => (
                                 <Form onSubmit={handleSubmit}>
+                                    <FormField name='firstName' label="Ім'я" type='text' />
+                                    <FormField className='mt-4' name='lastName' label="Прізвище" type='text' />
+                                    <FormField className='mt-4' name='email' label='Email' type='text' />
+                                    <FormField className='mt-4' name='phoneNumber' label='Телефон' type='text' />
                                     <FormField
+                                        className='mt-4'
                                         onBlur={handleBlur}
                                         name='organizationName'
                                         label='Організація'
                                         type='text'
                                     />
                                     <FormField className='mt-4' name='userName' label='Логін' type='text' />
-                                    <FormField className='mt-4' name='firstName' label="Ім'я" type='text' />
-                                    <FormField className='mt-4' name='lastName' label="Прізвище" type='text' />
-                                    <FormField className='mt-4' name='email' label='Email' type='text' />
-                                    <FormField className='mt-4' name='phoneNumber' label='Телефон' type='text' />
                                     <FormField
                                         className='mt-4'
                                         name='password'

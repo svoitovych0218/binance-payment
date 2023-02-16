@@ -1,4 +1,4 @@
-import { Dropdown, Figure, Row, NavLinkProps } from 'react-bootstrap';
+import { Dropdown, Figure, Row, NavLinkProps, OverlayTrigger, Popover } from 'react-bootstrap';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
@@ -7,7 +7,11 @@ import { UserRole } from './providers/AuthProvider';
 import { routes } from 'constants/routes';
 import Logo from 'assets/images/logo_black.png';
 import { CardList, CashStack, HouseDoorFill, KeyFill, PersonLinesFill } from 'react-bootstrap-icons';
-import { CSSProperties, FC } from 'react';
+import React, { CSSProperties, FC } from 'react';
+import { getDateWithOffset, getDateDifferenceInDay } from 'utils/date';
+import { Stopwatch } from 'react-bootstrap-icons';
+import Badge from '@mui/material/Badge';
+import { Link } from 'react-router-dom';
 
 const navLinkStyle: CSSProperties = {
     display: 'inline-flex',
@@ -22,9 +26,23 @@ const WrapperNavLink: FC<NavLinkProps> = ({ children, ...rest }) => <Nav.Link
     {children}
 </Nav.Link>
 
+const popover = (left: number) => (
+    <Popover id="popover-basic">
+        <Popover.Header as="h3">Повідомлення</Popover.Header>
+        <Popover.Body>
+            Ваша підписка на CRM систему закінчеється через <strong>{left}</strong> днів.
+            Перейдіть на сторінку <Link to={routes.billing}>Білінгу</Link> щоб продовжити підписку. Інакше створення платежів буде недоступним після закінчення вказаного терміну.
+        </Popover.Body>
+    </Popover>
+);
+
 export const Navigation = () => {
     const auth = useAuth();
-    console.log(auth?.user);
+    const overlayRef = React.useRef(null);
+    const subscriptionDaysLefs = auth?.user?.subscriptionPaidTill ? getDateDifferenceInDay(new Date(auth?.user?.subscriptionPaidTill),  new Date()) : undefined;
+    
+
+
     return (
         <Container fluid>
             <Row>
@@ -59,20 +77,38 @@ export const Navigation = () => {
                     </Navbar.Collapse>
                     }
                     {
-                        auth?.user && <Navbar.Collapse className="justify-content-end">
-                            <Navbar.Text>
-                                <Dropdown>
-                                    <Dropdown.Toggle variant="outline-primary" id="dropdown-basic">
-                                        Авторизовано: {auth?.user?.SK?.replace('User-', '') ?? ''}
-                                    </Dropdown.Toggle>
-                                    <Dropdown.Menu>
-                                        <Dropdown.Item onClick={() => auth?.logout()}>Вийти</Dropdown.Item>
-                                    </Dropdown.Menu>
-                                </Dropdown>
-                                {/* <Button style={{ float: 'right' }} variant='secondary' onClick={() => auth?.logout()}>Вийти</Button> */}
-                            </Navbar.Text>
-                        </Navbar.Collapse>
+                        subscriptionDaysLefs && subscriptionDaysLefs <= 14 &&
+                        <OverlayTrigger
+                            key={'bottom'}
+                            placement={'bottom'}
+                            trigger={['hover']}
+                            delay={{hide: 10000, show: 0}}
+                            overlay={popover(subscriptionDaysLefs)}
+                        >
+                            <Badge
+                                style={{ marginRight: '20px', cursor:'pointer' }}
+                                color="warning" badgeContent={subscriptionDaysLefs}>
+                                <Stopwatch size={25} />
+                            </Badge>
+                        </OverlayTrigger>
                     }
+                    <div className='justify-content-end'>
+                        {
+                            auth?.user && <Navbar.Collapse >
+                                <Navbar.Text>
+                                    <Dropdown>
+                                        <Dropdown.Toggle variant="outline-primary" id="dropdown-basic">
+                                            Авторизовано: {auth?.user?.SK?.replace('User-', '') ?? ''}
+                                        </Dropdown.Toggle>
+                                        <Dropdown.Menu>
+                                            <Dropdown.Item onClick={() => auth?.logout()}>Вийти</Dropdown.Item>
+                                        </Dropdown.Menu>
+                                    </Dropdown>
+                                    {/* <Button style={{ float: 'right' }} variant='secondary' onClick={() => auth?.logout()}>Вийти</Button> */}
+                                </Navbar.Text>
+                            </Navbar.Collapse>
+                        }
+                    </div>
                 </Navbar>
             </Row>
         </Container>

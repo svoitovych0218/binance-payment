@@ -26,7 +26,7 @@ export const Dashboard = () => {
 
     const handleSubmitModal = async (values: ICreatePaymentFormProps) => {
         setShowCreatePaymentModal(false);
-        await createSinglePayment({ receipeNumber: values.receipeNumber, amountBusd: values.amountBusd!, amountUah: values.amountUAH! });
+        await createSinglePayment({ receipeNumber: values.receipeNumber, amountBusd: values.amountBusd!, amountUah: values.amountUAH!, description: values.description });
         const res = await getPayments();
         setPayments(res.payments);
     }
@@ -64,7 +64,7 @@ export const Dashboard = () => {
                 Додайте <Link to={routes.apiKeys}>API ключі</Link>, для створення платежів
             </Alert>
         )
-    }
+    } 
 
     return (
         <Container>

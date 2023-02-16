@@ -9,10 +9,11 @@ export interface IPayment {
   amount: number;
   currency: string;
   binanceResponse: any;
-  receipNumber?: string;
+  receipNumber: string;
   paidAt?: string;
   cancelledBy?: string;
   refundedBy?: string;
+  description: string;
 }
 
 export enum PaymentStatus {

@@ -12,7 +12,7 @@ interface InputGroupProps {
     inputNode?: React.ReactNode
 }
 
-export const FormField = ({ label, type, name, className, required, inputNode, inputGroupPosition, ...props }: FormFieldProps & InputGroupProps) => {
+export const FormField = ({ label, type, as, name, className, required, inputNode, disabled, inputGroupPosition, ...props }: FormFieldProps & InputGroupProps) => {
     return (
         <Field
             name={name}
@@ -24,7 +24,7 @@ export const FormField = ({ label, type, name, className, required, inputNode, i
                         <InputGroup>
                             {/* /<InputGroup.Text id="basic-addon2">@example.com</InputGroup.Text> */}
                             {inputNode && inputGroupPosition === 'before' ? inputNode : null }
-                            <FormControl required={required} isInvalid={form.touched[field.name] && !!form.errors[field.name]} type={type} autoComplete="new-password" {...field} />
+                            <FormControl as={as} disabled={disabled} required={required} isInvalid={form.touched[field.name] && !!form.errors[field.name]} type={type} autoComplete="new-password" {...field} />
                             {inputNode && inputGroupPosition === 'after' ? inputNode : null }
                         </InputGroup>
 

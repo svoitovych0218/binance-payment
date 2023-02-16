@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Dropdown } from 'react-bootstrap';
 import Table from 'react-bootstrap/Table';
 import { toast } from 'react-toastify';
+import { getLocalizedRole } from 'utils/roles';
 import { activateUser } from '../../api/activateUser';
 import { getUsers } from '../../api/getUsers';
 import { IUser } from '../../types.ts/user';
@@ -36,8 +37,8 @@ export const UsersTable = () => {
             <Table size='sm' striped bordered hover >
                 <thead>
                     <tr>
-                        <th>Логін</th>
                         <th>Ім'я</th>
+                        <th>Логін</th>
                         <th>Email</th>
                         <th>Роль</th>
                         <th>Статус</th>
@@ -47,10 +48,10 @@ export const UsersTable = () => {
                 <tbody>
                     {users.map(s => (
                         <tr key={s.SK}>
-                            <td>{s.SK.replace('User-', '')}</td>
                             <td>{s.name}</td>
+                            <td>{s.SK.replace('User-', '')}</td>
                             <td>{s.email}</td>
-                            <td>{s.role}</td>
+                            <td>{getLocalizedRole(s.role)}</td>
                             <td>{s.active ? 'Автивний' : 'Неактивний'}</td>
                             <td><Dropdown>
                                 <Dropdown.Toggle variant="outline-success" id="dropdown-basic">

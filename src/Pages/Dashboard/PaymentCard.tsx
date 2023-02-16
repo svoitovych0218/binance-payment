@@ -12,10 +12,12 @@ export interface IPaymentTableItem {
     SK: string;
     amount: number;
     status: PaymentStatus;
+    amountUAH: number;
     currency: string;
     createdByUserName: string;
     createdAt: string;
-    receipNumber?: string;
+    description: string;
+    receipNumber: string;
     binanceResponse: any;
 }
 
@@ -65,15 +67,16 @@ export const PaymentCard: FC<IProps> = ({ item, cancelPayment, isDetailsMode }) 
             </Card.Body>
             <Card.Img variant="top" src={item.binanceResponse.data.qrcodeLink} />
             <ListGroup className="list-group-flush">
-                <ListGroup.Item>{`#${item.SK}`}</ListGroup.Item>
-                <ListGroup.Item>{`Чек #${item.receipNumber}`}</ListGroup.Item>
+                <ListGroup.Item>{`Чек ${item.receipNumber}`}</ListGroup.Item>
+                {item.description && <ListGroup.Item>{`Опис ${item.description}`}</ListGroup.Item>}
+                <ListGroup.Item>Ціна: {item.amountUAH?.toFixed(2)} ГРН</ListGroup.Item>
                 <ListGroup.Item>Ціна: {item.amount.toFixed(2)} {item.currency}</ListGroup.Item>
                 {!isDetailsMode && <ListGroup.Item>Створив: {item.createdByUserName}</ListGroup.Item>}
                 <ListGroup.Item style={{ color: getColorFromStatus(item.status) }}>Статус: {getLocalizedStatus(item.status)}</ListGroup.Item>
                 {item.createdAt && <ListGroup.Item>Дата: {getFormattedDateInLocalTimeZone(item.createdAt)}</ListGroup.Item>}
                 {!isDetailsMode && <ListGroup.Item>
                     <Dropdown>
-                        <Dropdown.Toggle variant="primary" id="dropdown-basic">
+                        <Dropdown.Toggle style={{ width: '100%' }} variant="primary" id="dropdown-basic">
                             Дії
                         </Dropdown.Toggle>
 
@@ -87,16 +90,13 @@ export const PaymentCard: FC<IProps> = ({ item, cancelPayment, isDetailsMode }) 
                 }
                 {isDetailsMode && item.status === PaymentStatus.PENDING &&
                     <ListGroup.Item>
-                        <Button onClick={handlePay}>
+                        <Button style={{ width: '100%' }} onClick={handlePay}>
                             Оплатити
                         </Button>
                     </ListGroup.Item>
                 }
             </ListGroup>
-            {/* <Card.Body>
-        <Card.Link href="#">Card Link</Card.Link>
-        <Card.Link href="#">Another Link</Card.Link>
-      </Card.Body> */}
-        </Card >
+
+        </Card>
     )
 }
