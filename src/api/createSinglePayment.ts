@@ -5,6 +5,7 @@ interface ICreateSinglePaymentRequest {
     receipeNumber: string;
     amountBusd: number;
     amountUah: number;
+    description: string;
 }
 
 export const createSinglePayment = async (request: ICreateSinglePaymentRequest) => {

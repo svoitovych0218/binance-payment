@@ -6,3 +6,11 @@ export const getFormattedDateInLocalTimeZone = (
 ) => {
   return format(new Date(date), formatType)
 }
+
+export const getDateWithOffset = (offsetInDays: number) => {
+  return new Date(new Date().setDate(new Date().getDate() + offsetInDays));
+}
+
+export const getDateDifferenceInDay = (a: Date, b: Date) => {
+  return Math.floor((+a - +b) / 1000 / 60 / 60 / 24)
+}

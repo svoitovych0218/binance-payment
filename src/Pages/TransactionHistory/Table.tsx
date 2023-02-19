@@ -1,24 +1,15 @@
-import { useCallback, useEffect, useState } from 'react';
-import { Button, Form, FormGroup } from 'react-bootstrap';
+import { Button, Form, FormGroup, Tooltip, OverlayTrigger, Spinner } from 'react-bootstrap';
 import Table from 'react-bootstrap/Table';
-import { toast } from 'react-toastify';
-import { getExcelReport } from '../../api/getExcelReport';
-import { getPayments } from '../../api/getPayments';
-import { IPayment } from '../../types.ts/payment';
 import { getLocalizedStatus } from '../../utils/statuses';
 import { getFormattedDateInLocalTimeZone } from 'utils/date';
+import { useTransactionHistory } from './useTransactionHistory/useTransactionHistory';
+import { TransactionHistoryFiltersActionTypes } from 'types.ts/payment';
+import { PaymentStatus } from 'types.ts/payment';
+import { Cash } from 'react-bootstrap-icons';
+import { LoadingButton } from 'Components/LoadingButton';
+import { useRef } from 'react';
 
-interface IFilters {
-    from: string;
-    to: string;
-    paidOnly: boolean;
-}
-
-const formatDate = (date: Date) => {
-    return date.toISOString().split('T')[0];
-}
-
-const getColorFromStatus = (status: string) => {
+const getColorFromStatus = (status: PaymentStatus) => {
     switch (status) {
         case 'COMPLETED':
             return 'green';
@@ -26,70 +17,87 @@ const getColorFromStatus = (status: string) => {
             return 'blue';
         case 'CANCELLED':
             return 'RED';
+        case 'REFUNDED':
+            return '#ca8a14'
         default:
             return 'gray';
     }
 }
 
 export const PaymentsTable = () => {
-    const date = new Date();
-    const firstMonthDate = formatDate(new Date(date.getFullYear(), date.getMonth(), 1));
-    const now = formatDate(date);
-
-    const [filters, setFilters] = useState<IFilters>({
-        from: firstMonthDate,
-        to: now,
-        paidOnly: false
-    });
-
-    const [payments, setPayments] = useState<IPayment[]>([]);
-    const [completedTotal, setCompletedTotal] = useState<number | undefined>();
-
-    useEffect(() => {
-        (async () => {
-            const res = await getPayments(new Date(filters.from).toISOString(), new Date(filters.to).toISOString(), filters.paidOnly);
-            setPayments(res.payments);
-            setCompletedTotal(res.completedPaymentsSum);
-        })()
-    }, [filters]);
-
-    const getExcellReportCallback = useCallback(async () => {
-        try {
-            const url = await getExcelReport(new Date(filters.from).toISOString(), new Date(filters.to).toISOString(), filters.paidOnly);
-            window.open(url);
-        } catch (e: any) {
-            toast(e.response?.data?.message ?? 'Something went wrong', { type: 'error' });
-        }
-    }, [filters]);
+    const timeout = useRef<NodeJS.Timeout>();
+    const {
+        completedTotal,
+        payments,
+        filters,
+        dispatch,
+        getExcellReportCallback,
+        isLoadingPayments,
+        fetchMorePayments,
+        handleOpenRefundModal,
+        refundModalElement
+    } = useTransactionHistory();
 
     return (
         <>
             <div style={{ display: 'flex', margin: '20px 0' }}>
-                <Form.Group style={{ display: 'flex' }}>
+                <Form.Group>
+                    <Form.Label>Пошук</Form.Label>
+                    <Form.Control
+                        style={{ width: '300px' }}
+                        size='sm'
+                        placeholder="Введіть номер чеку"
+                        type="text"
+                        name='search'
+                        onChange={(e) => {
+                            clearTimeout(timeout.current);
+                            timeout.current = setTimeout(() => {
+                                dispatch({
+                                    type: TransactionHistoryFiltersActionTypes.SET_SEARCH,
+                                    payload: e.target.value
+                                })
+                            }, 1000);
+
+                        }} />
+                </Form.Group>
+                <Form.Group className='ml-2'>
                     <Form.Label>Від</Form.Label>
                     <Form.Control
-                        style={{ width: '300px' }}
-                        className='ml-2'
+                        style={{ width: '150px' }}
                         size='sm'
                         type="date"
-                        value={filters.from}
+                        value={getFormattedDateInLocalTimeZone(filters.from, 'yyyy-MM-dd')}
                         name='from'
-                        onChange={(e) => setFilters(prev => ({ ...prev, from: e.target.value }))} />
+                        onChange={(e) => dispatch({
+                            type: TransactionHistoryFiltersActionTypes.SET_FROM_DATE,
+                            payload: {
+                                from: e.target.value
+                            }
+                        })} />
                 </Form.Group>
-                <Form.Group className='ml-4' style={{ display: 'flex' }}>
+                <Form.Group className='ml-2'>
                     <Form.Label>До</Form.Label>
                     <Form.Control
-                        className='ml-2'
-                        style={{ width: '300px' }}
+                        style={{ width: '150px' }}
                         size='sm' type="date"
-                        value={filters.to}
+                        value={getFormattedDateInLocalTimeZone(filters.to, 'yyyy-MM-dd')}
                         name='to'
-                        onChange={(e) => setFilters(prev => ({ ...prev, to: e.target.value }))} />
+                        onChange={(e) => dispatch({
+                            type: TransactionHistoryFiltersActionTypes.SET_TO_DATE,
+                            payload: {
+                                to: e.target.value
+                            }
+                        })} />
                 </Form.Group>
-                <Form.Group className='ml-4'>
-                    <Form.Check label="Оплачені" checked={filters.paidOnly} onChange={() => setFilters(prev => ({ ...prev, paidOnly: !prev.paidOnly }))} />
+                <Form.Group className='ml-2' style={{ display: 'flex', alignItems: 'flex-end' }}>
+                    <Form.Check label="Оплачені" checked={filters.paidOnly} onChange={(e) => dispatch({
+                        type: TransactionHistoryFiltersActionTypes.SET_PAID_ONLY,
+                        payload: {
+                            paidOnly: e.target.checked
+                        }
+                    })} />
                 </Form.Group>
-                <FormGroup className='ml-4'>
+                <FormGroup style={{ marginLeft: 'auto' }}>
                     <Button variant='outline-primary' onClick={() => getExcellReportCallback()}>Excel Звіт</Button>
                 </FormGroup>
             </div>
@@ -99,15 +107,16 @@ export const PaymentsTable = () => {
             <Table size='sm' striped bordered hover >
                 <thead>
                     <tr>
-                        <th>#</th>
+                        <th>ID</th>
                         <th>Чек #</th>
+                        <th>Опис</th>
                         <th>Сума</th>
                         <th>Сума</th>
                         <th>Створив</th>
                         <th>Статус</th>
-                        <th>Відмінив</th>
                         <th>Створено</th>
                         <th>Оплачено</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -115,17 +124,63 @@ export const PaymentsTable = () => {
                         <tr key={s.SK}>
                             <td>{s.SK}</td>
                             <td>{s.receipNumber}</td>
+                            <td>{s.description}</td>
                             <td>{s.amountUAH} UAH</td>
                             <td>{s.amount.toFixed(2)} {s.currency}</td>
                             <td>{s.createdByUserName}</td>
-                            <td style={{ color: getColorFromStatus(s.status) }}>{getLocalizedStatus(s.status)}</td>
-                            <td>{s.cancelledBy}</td>
+                            <td style={{ color: getColorFromStatus(s.status), textAlign: 'center' }}>
+                                {getLocalizedStatus(s.status)} <br />
+                                {s.status === PaymentStatus.REFUNDED && s.refundedBy && <div style={{ color: 'initial' }}>
+                                    ({s.refundedBy})
+                                </div>}
+                                {s.status === PaymentStatus.CANCELLED && s.cancelledBy && <div style={{ color: 'initial' }}>
+                                    ({s.cancelledBy})
+                                </div>}
+                            </td>
                             <td>{getFormattedDateInLocalTimeZone(s.createdAt)}</td>
                             <td>{s.paidAt && getFormattedDateInLocalTimeZone(s.paidAt)}</td>
+                            <td>{s.status === PaymentStatus.COMPLETED &&
+                                <OverlayTrigger
+                                    placement='top'
+                                    overlay={
+                                        <Tooltip id={`tooltip-${s.SK}`}>
+                                            Повернути кошти
+                                        </Tooltip>
+                                    }
+                                >
+                                    <Cash
+                                        width={20}
+                                        height={20}
+                                        onClick={() => handleOpenRefundModal(s.SK)}
+                                        cursor="pointer"
+                                        color='green'
+                                    />
+                                </OverlayTrigger>
+                            }</td>
                         </tr>
                     ))}
                 </tbody>
             </Table>
+            {refundModalElement}
+            {isLoadingPayments && <div
+                style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    marginTop: '50px',
+                    marginBottom: '50px'
+                }}>
+                <Spinner animation="border" variant="primary" />
+            </div>
+            }
+            {filters.cursor && !isLoadingPayments && <div style={{ textAlign: 'center' }}>
+                <LoadingButton
+                    isLoading={isLoadingPayments}
+                    onClick={fetchMorePayments}
+                >
+                    Завантажити ще
+                </LoadingButton>
+            </div>
+            }
         </>
     );
 }

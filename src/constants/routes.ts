@@ -12,5 +12,6 @@ export const routes = {
   emailConfirmation: '/email-confirmation',
   emailNotConfirmed: '/email-not-confirmed',
   billing: '/billing',
-  subscriptionRates: '/subscription-rates'
+  subscriptionRates: '/subscription-rates',
+  paymentDetails: '/payment/:id/details/:sk'
 }
