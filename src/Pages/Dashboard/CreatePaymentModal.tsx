@@ -19,9 +19,10 @@ export interface ICreatePaymentFormProps {
     amountBusd?: number;
     amountUAH?: number;
     receipeNumber: string;
+    description: string;
 }
 
-const AmmountFormField = ({ label, type, name, ...props }: FormFieldProps) => {
+const AmmountFormField = ({ label, type, required, name, ...props }: FormFieldProps) => {
     const { values, setFieldValue } = useFormikContext<ICreatePaymentFormProps>();
     const debouncedAmount = useDebounce(values.amountUAH, 1000);
     const getRate = useCallback(async () => {
@@ -41,7 +42,7 @@ const AmmountFormField = ({ label, type, name, ...props }: FormFieldProps) => {
             render={({ field, form }: FieldProps<any>) => (
                 <FormGroup>
                     <FormLabel>{label}</FormLabel>
-                    <FormControl isInvalid={!!form.errors[field.name]} type={type} value={field.value} onChange={e => {
+                    <FormControl required={required} isInvalid={!!form.errors[field.name]} type={type} value={field.value} onChange={e => {
                         setFieldValue(field.name, +e.target.value);
                     }} />
                     <div>{form.errors[field.name] as string}</div>
@@ -55,7 +56,8 @@ export const CreatePaymentModal = ({ show, onClose, handleSubmit }: ICreatePayme
     const initialValues: ICreatePaymentFormProps = {
         amountBusd: undefined,
         amountUAH: undefined,
-        receipeNumber: ''
+        receipeNumber: '',
+        description: ''
     }
 
     return (
@@ -81,10 +83,11 @@ export const CreatePaymentModal = ({ show, onClose, handleSubmit }: ICreatePayme
                     }) => {
                         return (
                             <Form onSubmit={handleSubmit}>
-                                <FormField name="receipeNumber" label='Номер чеку' type='text' />
-                                <AmmountFormField name="amountUAH" label='Сума в UAH' type='number' />
-                                <FormField disabled name="amountBusd" label='Сума в USDT' type='number' />
-                                <Button variant="primary" type='submit'>
+                                <FormField required name="receipeNumber" label='Номер чеку' type='text' />
+                                <FormField name="description" label='Опис товару/послуги' type='text' as='textarea'/>
+                                <AmmountFormField required name="amountUAH" label='Сума в UAH' type='number' />
+                                <FormField required disabled={true} name="amountBusd" label='Сума в USDT' type='number' />
+                                <Button className='mt-4' size='lg' variant="primary" type='submit'>
                                     Створити
                                 </Button>
                             </Form>

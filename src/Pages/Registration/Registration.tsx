@@ -9,6 +9,7 @@ import { registration } from "../../api/registration";
 import { toast } from "react-toastify";
 import { routes } from "constants/routes";
 import { ErrorLabel } from "Components/ErrorLabel";
+import { checkEmailAvailable } from "api/checkEmailExists";
 
 interface ILoginFormProps {
     organizationName: string;
@@ -29,7 +30,14 @@ const SignupSchema = Yup.object().shape({
         .max(15, 'Назва організації має бути в межах від 5 до 15 символів.')
         .matches(/^[a-zA-Z0-9_]+$/, "Назва має складатись тільки з латинських символів та _")
         .required("Це поле обов'язкове"),
-    email: Yup.string().email('Невірний емейл').required("Це поле обов'язкове"),
+    email: Yup.string()
+        .email('Невірний емейл')
+        .required("Це поле обов'язкове")
+        .test('checkIfEmailDoesNotExist', 'Такий email вже існує', async (value) => {
+            if (!value)
+                return false;
+            return await checkEmailAvailable(value);
+        }),
     firstName: Yup.string()
         .min(3, "Ім'я повинно буде в межах від 3 до 25 символів")
         .max(25, "Ім'я повинно буде в межах від 5 до 25 символів")
@@ -108,17 +116,18 @@ export const Registration = () => {
                                 /* and other goodies */
                             }) => (
                                 <Form onSubmit={handleSubmit}>
+                                    <FormField name='firstName' label="Ім'я" type='text' />
+                                    <FormField className='mt-4' name='lastName' label="Прізвище" type='text' />
+                                    <FormField className='mt-4' name='email' label='Email' type='text' />
+                                    <FormField className='mt-4' name='phoneNumber' label='Телефон' type='text' />
                                     <FormField
+                                        className='mt-4'
                                         onBlur={handleBlur}
                                         name='organizationName'
                                         label='Організація'
                                         type='text'
                                     />
                                     <FormField className='mt-4' name='userName' label='Логін' type='text' />
-                                    <FormField className='mt-4' name='firstName' label="Ім'я" type='text' />
-                                    <FormField className='mt-4' name='lastName' label="Прізвище" type='text' />
-                                    <FormField className='mt-4' name='email' label='Email' type='text' />
-                                    <FormField className='mt-4' name='phoneNumber' label='Телефон' type='text' />
                                     <FormField
                                         className='mt-4'
                                         name='password'

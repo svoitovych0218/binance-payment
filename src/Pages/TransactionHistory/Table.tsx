@@ -109,6 +109,7 @@ export const PaymentsTable = () => {
                     <tr>
                         <th>ID</th>
                         <th>Чек #</th>
+                        <th>Опис</th>
                         <th>Сума</th>
                         <th>Сума</th>
                         <th>Створив</th>
@@ -123,6 +124,7 @@ export const PaymentsTable = () => {
                         <tr key={s.SK}>
                             <td>{s.SK}</td>
                             <td>{s.receipNumber}</td>
+                            <td>{s.description}</td>
                             <td>{s.amountUAH} UAH</td>
                             <td>{s.amount.toFixed(2)} {s.currency}</td>
                             <td>{s.createdByUserName}</td>
