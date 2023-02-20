@@ -86,7 +86,7 @@ export const CreatePaymentModal = ({ show, onClose, handleSubmit }: ICreatePayme
                                 <FormField required name="receipeNumber" label='Номер чеку' type='text' />
                                 <FormField name="description" label='Опис товару/послуги' type='text' as='textarea'/>
                                 <AmmountFormField required name="amountUAH" label='Сума в UAH' type='number' />
-                                <FormField required disabled={true} name="amountBusd" label='Сума в USDT' type='number' />
+                                <FormField required name="amountBusd" label='Сума в USDT' type='number' />
                                 <Button className='mt-4' size='lg' variant="primary" type='submit'>
                                     Створити
                                 </Button>
