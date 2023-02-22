@@ -13,6 +13,7 @@ import { Stopwatch } from 'react-bootstrap-icons';
 import Badge from '@mui/material/Badge';
 import { Link } from 'react-router-dom';
 import { useClickAway } from 'react-use';
+import { ElementGuard } from 'Components/ElementGuard';
 
 const navLinkStyle: CSSProperties = {
     display: 'inline-flex',
@@ -60,18 +61,22 @@ export const Navigation = () => {
                                 <HouseDoorFill />
                                 Головна
                             </WrapperNavLink>
-                            <WrapperNavLink href={routes.configurations}>
-                                <PersonLinesFill />
-                                Користувачі
-                            </WrapperNavLink>
+                            <ElementGuard roles={[UserRole.Admin, UserRole.Owner, UserRole.SuperAdmin]}>
+                                <WrapperNavLink href={routes.configurations}>
+                                    <PersonLinesFill />
+                                    Користувачі
+                                </WrapperNavLink>
+                            </ElementGuard>
                             <WrapperNavLink href={routes.transactionHistory}>
                                 <CardList />
                                 Історія транзакцій
                             </WrapperNavLink>
-                            {auth?.user.role === UserRole.Owner && <WrapperNavLink href={routes.apiKeys}>
-                                <KeyFill />
-                                API ключі
-                            </WrapperNavLink>}
+                            <ElementGuard roles={[UserRole.Owner]}>
+                                <WrapperNavLink href={routes.apiKeys}>
+                                    <KeyFill />
+                                    API ключі
+                                </WrapperNavLink>
+                            </ElementGuard>
                             <WrapperNavLink href={routes.billing}>
                                 <CashStack />
                                 Білінг
@@ -99,7 +104,7 @@ export const Navigation = () => {
                     }
                     <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                     {
-                        auth?.user && <Navbar.Collapse style={{flexGrow: 0}}>
+                        auth?.user && <Navbar.Collapse style={{ flexGrow: 0 }}>
                             <Navbar.Text>
                                 <Dropdown>
                                     <Dropdown.Toggle variant="outline-primary" id="dropdown-basic">
