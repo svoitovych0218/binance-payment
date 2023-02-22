@@ -2,6 +2,7 @@ import { Form, Formik, FormikProps } from "formik"
 import { forwardRef } from "react";
 import { Button } from "react-bootstrap"
 import { FormEyeInput } from "Components/Inputs/FormEyeInput";
+import { apiKeysSchema } from "./validationSchema";
 
 export interface FormValues {
     clientId: string;
@@ -19,6 +20,7 @@ export const ApiKeysForm = forwardRef<FormikProps<FormValues>, FormProps>(({ ini
         innerRef={ref}
         initialValues={initialValues}
         onSubmit={onSubmit}
+        validationSchema={apiKeysSchema}
     >
         {({
             values,

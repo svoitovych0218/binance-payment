@@ -8,6 +8,8 @@ import { PaymentStatus } from 'types.ts/payment';
 import { Cash } from 'react-bootstrap-icons';
 import { LoadingButton } from 'Components/LoadingButton';
 import { useRef } from 'react';
+import { UserRole } from 'providers/AuthProvider';
+import { useHasPermission } from 'hooks/useHasPermission';
 
 const getColorFromStatus = (status: PaymentStatus) => {
     switch (status) {
@@ -25,6 +27,7 @@ const getColorFromStatus = (status: PaymentStatus) => {
 }
 
 export const PaymentsTable = () => {
+    const hasRefundPermission = useHasPermission([UserRole.Admin, UserRole.Owner, UserRole.SuperAdmin]);
     const timeout = useRef<NodeJS.Timeout>();
     const {
         completedTotal,
@@ -140,6 +143,7 @@ export const PaymentsTable = () => {
                             <td>{getFormattedDateInLocalTimeZone(s.createdAt)}</td>
                             <td>{s.paidAt && getFormattedDateInLocalTimeZone(s.paidAt)}</td>
                             <td>{s.status === PaymentStatus.COMPLETED &&
+                                hasRefundPermission &&
                                 <OverlayTrigger
                                     placement='top'
                                     overlay={
